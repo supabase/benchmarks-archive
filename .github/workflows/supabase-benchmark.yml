@@ -1,0 +1,28 @@
+name: Supabase Benchmark
+
+# Runs the Supabase benchmark every day and pushes the results to a Supabase table
+on:
+  schedule:
+    - cron: "* 1 * * *"
+
+jobs:
+  supbase-benchmark:
+    defaults:
+      run:
+        working-directory: ./supabase
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      # install k6
+      - run: sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && echo "deb https://dl.bintray.com/loadimpact/deb stable main" | sudo tee -a /etc/apt/sources.list && sudo apt-get update && sudo apt-get install k6
+      - run: npm install
+      - run: npm run benchmark
+        env:
+          CI: true
+          supabaseKey: ${{ secrets.supabaseKey }}
+          supabaseUrl: ${{ secrets.supabaseUrl }}
