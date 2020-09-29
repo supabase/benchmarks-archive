@@ -4,14 +4,6 @@ import { Rate } from 'k6/metrics'
 const supabaseUrl = __ENV.supabaseUrl
 const supabaseKey = __ENV.supabaseKey
 
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
-}
-
 const myFailRate = new Rate('failed requests')
 
 export let options = {
@@ -35,12 +27,7 @@ export function setup() {
 }
 
 export default function () {
-  const body = [
-    {
-      id: uuidv4(),
-      slug: uuidv4(),
-    },
-  ]
+  const body = [{}]
   const params = {
     headers: {
       apiKey: supabaseKey,

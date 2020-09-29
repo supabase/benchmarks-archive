@@ -6,21 +6,21 @@ Benchmarking setup
 ```sql
 -- READ DATA
 create table public.read (
-  id          uuid          not null primary key,
-  slug        text
+  id          uuid      default uuid_generate_v4()    not null primary key,
+  slug        uuid      default uuid_generate_v4()
 );
 comment on table public.read is 'Table with some data to test read benchmarking';
 
 -- WRITE DATA
 create table public.write (
-  id          uuid          not null primary key,
-  slug        text
+  id          uuid      default uuid_generate_v4()      not null primary key,
+  slug        uuid      default uuid_generate_v4()
 );
 comment on table public.write is 'Table with some data to test write benchmarking';
 
 -- BENCHMARKING-DATA
 create table public.benchmarks (
-  id            uuid                        not null primary key,
+  id            uuid    default uuid_generate_v4()  not null primary key,
   benchmark_name text,
   data          jsonb,
   inserted_at   timestamp with time zone    default timezone('utc'::text, now()) not null

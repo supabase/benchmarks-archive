@@ -6,14 +6,6 @@ const supabaseKey = __ENV.supabaseKey
 
 const myFailRate = new Rate('failed requests')
 
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
-}
-
 export let options = {
   vus: 10,
   duration: '30s',
@@ -42,10 +34,7 @@ export function setup() {
       'Content-Type': 'application/json',
     },
   }
-  const body = Array.from(Array(10)).map(() => ({
-    id: uuidv4(),
-    slug: uuidv4(),
-  }))
+  const body = Array.from(Array(10)).map(() => ({}))
   http.post(`${supabaseUrl}/rest/v1/read`, JSON.stringify(body), insertParams)
 }
 
