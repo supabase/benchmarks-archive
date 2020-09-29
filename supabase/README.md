@@ -26,6 +26,22 @@ create table public.benchmarks (
   inserted_at   timestamp with time zone    default timezone('utc'::text, now()) not null
 );
 comment on table public.benchmarks is 'Table to store benchmarking data';
+
+-- BENCHMARKING SUMMARIES
+create or replace view benchmark_summaries as (
+  select
+    id
+  , benchmark_name
+  , data->'metrics'->'http_reqs'->'rate' as http_reqs_rate
+  , data->'metrics'->'http_reqs'->'count' as http_reqs_count
+  , data->'metrics'->'http_req_duration'->'avg' as http_req_duration_avg
+  , pg_size_pretty((data->'metrics'->'data_received'->'count')::bigint) as data_received
+  , pg_size_pretty((data->'metrics'->'data_sent'->'count')::bigint) as data_sent
+  , data->'metrics'->'vus'->'value' as vus
+  , data->'metrics'->'failed requests'->'value' as failed_requests
+  from
+  benchmarks
+);
 ```
 
 Export the following environment variables before running the scripts
