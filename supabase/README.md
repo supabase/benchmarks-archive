@@ -11,8 +11,6 @@ export supabaseUrl=https://<project>.supabase.net
 export supabaseKey=<supabase-key>
 ```
 
-Run the query from `../db/migrations/20200930011957_init.sql` on your Supabase instance to install the benchmark schema 
-
 Then to run all the benchmarks and upload the results to db run
 
 > npm run benchmark
