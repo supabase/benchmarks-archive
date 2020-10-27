@@ -1,0 +1,26 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@supabase/realtime-js": "^1.0.6",
+    "@supabase/supabase-js": "^0.36.5",
+    "cheerio": "^1.0.0-rc.3",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-loader": "^8.1.0",
+    "core-js": "^3.6.5",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "scripts": {
+    "webpack": "webpack",
+    "test": "npm run webpack && k6 run build/app.bundle.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
