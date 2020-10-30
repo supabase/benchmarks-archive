@@ -18,6 +18,7 @@
    Modified for postgrest-benchmark:
    Summary of Changes:
      - Removed employee table indexes and constraints
+     - Added add_them, ret_albums and ret_artists functions
 ********************************************************************************/
 
 
@@ -23861,3 +23862,15 @@ ALTER TABLE "film_actor" ADD PRIMARY KEY ("actor_id", "film_id");
 alter table employee drop constraint pk_employee cascade;
 drop index ifk_employee_reports_to;
 drop sequence employee_employee_id_seq cascade;
+
+create or replace function ret_albums() returns setof album as $$
+  select * from album
+$$ language sql stable;
+
+create or replace function ret_artists() returns setof artist as $$
+  select * from artist
+$$ language sql stable;
+
+create or replace function add_them(a int, b int, c int, d int, e int) returns int as $$
+  select a + b + c + d + e;
+$$ language sql immutable;
