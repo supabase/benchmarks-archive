@@ -4,7 +4,7 @@
   "description": "scripts for benchmarking different aspects of the system",
   "main": "read.js",
   "scripts": {
-    "benchmark": "npm run init && npm run benchmark-read; npm run benchmark-write; npm run write-results-to-db",
+    "benchmark": "npm run init && npm run benchmark-read; npm run benchmark-write",
     "benchmark-write": "k6 run --summary-export=output/write.json write.js",
     "benchmark-read": "k6 run --summary-export=output/read.json read.js",
     "write-results-to-db": "node write-results-db.js",

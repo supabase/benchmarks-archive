@@ -24,7 +24,7 @@ export function setup() {
       Authorization: `Bearer ${supabaseKey}`,
     },
   }
-  http.del(`${supabaseUrl}/rest/v1/read`, {}, delParams)
+  http.del(`${supabaseUrl}/read`, {}, delParams)
 
   // add in 10 rows
   const insertParams = {
@@ -46,6 +46,6 @@ export default function () {
       Range: '0-9',
     },
   }
-  const res = http.get(`${supabaseUrl}/rest/v1/read?select=*`, params)
+  const res = http.get(`${supabaseUrl}/read?select=*`, params)
   myFailRate.add(res.status !== 200)
 }

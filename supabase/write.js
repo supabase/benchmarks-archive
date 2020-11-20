@@ -23,7 +23,7 @@ export function setup() {
       Authorization: `Bearer ${supabaseKey}`,
     },
   }
-  http.del(`${supabaseUrl}/rest/v1/write`, {}, params)
+  http.del(`${supabaseUrl}/write`, {}, params)
 }
 
 export default function () {
@@ -35,6 +35,6 @@ export default function () {
       'Content-Type': 'application/json',
     },
   }
-  const res = http.post(`${supabaseUrl}/rest/v1/write`, JSON.stringify(body), params)
+  const res = http.post(`${supabaseUrl}/write`, JSON.stringify(body), params)
   myFailRate.add(res.status !== 201)
 }
