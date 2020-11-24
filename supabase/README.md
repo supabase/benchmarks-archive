@@ -7,11 +7,13 @@ Benchmarking setup
 
 export the following env vars from the terminal:
 ```bash
-export supabaseUrl=https://<project>.supabase.net
-export supabaseKey=<supabase-key>
+export SUPABASE_URL=https://<project>.supabase.net
+export SUPABASE_KEY=<supabase-key>
 ```
 
-Run the query from `../db/migrations/20200930011957_init.sql` on your Supabase instance to install the benchmark schema 
+Run `npm install`
+Run the query from `../db/migrations/20200930011957_init.sql` on your Supabase instance to install the benchmark schema
+Run the query from `../db/migrations/20201124141199_read_data.sql`, for this one you probably want to use `psql postgres://postgres:[YOUR-PASSWORD]@[SUPABASE_DB_URL]:5432/postgres -f 20201124141199_read_data.sql`
 
 Then to run all the benchmarks and upload the results to db run
 

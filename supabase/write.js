@@ -1,13 +1,14 @@
 import http from 'k6/http'
 import { Rate } from 'k6/metrics'
 
-const supabaseUrl = __ENV.supabaseUrl
-const supabaseKey = __ENV.supabaseKey
+const supabaseUrl = __ENV.SUPABASE_URL
+const supabaseKey = __ENV.SUPABASE_KEY
 
 const myFailRate = new Rate('failed requests')
 
 export let options = {
   vus: 10,
+  discardResponseBodies: true,
   duration: '30s',
   thresholds: {
     'failed requests': ['rate<0.05'],
@@ -27,7 +28,8 @@ export function setup() {
 }
 
 export default function () {
-  const body = [{}]
+  let n = Math.floor((Math.random() * 1000000000) + 1)
+  const body = [{ id: n, slug: n }]
   const params = {
     headers: {
       apiKey: supabaseKey,
@@ -37,4 +39,7 @@ export default function () {
   }
   const res = http.post(`${supabaseUrl}/rest/v1/write`, JSON.stringify(body), params)
   myFailRate.add(res.status !== 201)
+  if (res.status !== 201) {
+    console.log(res.status)
+  }
 }
