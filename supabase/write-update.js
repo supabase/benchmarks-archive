@@ -34,7 +34,7 @@ export default function () {
   // we can use the 1 million row table 'read'
   const res = http.patch(`${supabaseUrl}/rest/v1/read?id=eq.${Math.floor(Math.random() * 1000000 + 1)}`, JSON.stringify(body), params)
   myFailRate.add(res.status !== 201)
-  if (res.status !== 201) {
+  if (res.status !== 201 && res.status !== 204) {
     console.log(res.status)
   }
 }
