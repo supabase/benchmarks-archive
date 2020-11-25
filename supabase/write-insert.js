@@ -1,4 +1,4 @@
-// This test reads from random rows in a table with 1 million rows
+// This test writes as many new rows as possible
 
 import http from 'k6/http'
 import { Rate } from 'k6/metrics'
@@ -11,7 +11,6 @@ const myFailRate = new Rate('failed requests')
 export let options = {
   vus: 10,
   discardResponseBodies: true,
-  compatibilityMode: 'base',
   duration: '30s',
   thresholds: {
     'failed requests': ['rate<0.05'],
@@ -20,23 +19,29 @@ export let options = {
 }
 
 export function setup() {
-  // see read-setup.js to setup 1 million rows for read test
-}
-
-export default function () {
+  // make sure we are starting off with a clean table
   const params = {
     headers: {
       apiKey: supabaseKey,
       Authorization: `Bearer ${supabaseKey}`,
-      Range: '0-9',
     },
   }
-  const res = http.get(
-    `${supabaseUrl}/rest/v1/read?select=id&id=eq.${Math.floor(Math.random() * 1000000 + 1)}`,
-    params
-  )
-  myFailRate.add(res.status !== 200)
-  if (res.status !== 200) {
+  http.del(`${supabaseUrl}/rest/v1/write`, {}, params)
+}
+
+export default function () {
+  let n = Math.floor((Math.random() * 1000000000) + 1)
+  const body = [{ id: n, slug: n }]
+  const params = {
+    headers: {
+      apiKey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+      'Content-Type': 'application/json',
+    },
+  }
+  const res = http.post(`${supabaseUrl}/rest/v1/write`, JSON.stringify(body), params)
+  myFailRate.add(res.status !== 201)
+  if (res.status !== 201) {
     console.log(res.status)
   }
 }

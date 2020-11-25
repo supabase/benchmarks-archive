@@ -1,3 +1,5 @@
+// This test reads from a single row as many times as possible
+
 import http from 'k6/http'
 import { Rate } from 'k6/metrics'
 
@@ -9,6 +11,7 @@ const myFailRate = new Rate('failed requests')
 export let options = {
   vus: 10,
   discardResponseBodies: true,
+  compatibilityMode: 'base',
   duration: '30s',
   thresholds: {
     'failed requests': ['rate<0.05'],
@@ -17,29 +20,27 @@ export let options = {
 }
 
 export function setup() {
-  // make sure we are starting off with a clean table
   const params = {
     headers: {
       apiKey: supabaseKey,
       Authorization: `Bearer ${supabaseKey}`,
+      Range: '0-9',
     },
   }
-  http.del(`${supabaseUrl}/rest/v1/write`, {}, params)
+  http.post(`${supabaseUrl}/rest/v1/read`, JSON.stringify({ id: 1, slug: 1 }), params)
 }
 
 export default function () {
-  let n = Math.floor((Math.random() * 1000000000) + 1)
-  const body = [{ id: n, slug: n }]
   const params = {
     headers: {
       apiKey: supabaseKey,
       Authorization: `Bearer ${supabaseKey}`,
-      'Content-Type': 'application/json',
+      Range: '0-9',
     },
   }
-  const res = http.post(`${supabaseUrl}/rest/v1/write`, JSON.stringify(body), params)
-  myFailRate.add(res.status !== 201)
-  if (res.status !== 201) {
+  const res = http.get(`${supabaseUrl}/rest/v1/read?select=id&id=eq.1`, params)
+  myFailRate.add(res.status !== 200)
+  if (res.status !== 200) {
     console.log(res.status)
   }
 }
