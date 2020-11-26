@@ -4,9 +4,11 @@
   "description": "scripts for benchmarking different aspects of the system",
   "main": "read.js",
   "scripts": {
-    "benchmark": "npm run init && npm run benchmark-read; npm run benchmark-write; npm run write-results-to-db",
-    "benchmark-write": "k6 run --summary-export=output/write.json write.js",
+    "benchmark": "npm run init && npm run benchmark-read; npm run benchmark-write-update; npm run benchmark-read-single; npm run benchmark-write-insert; npm run write-results-to-db",
+    "benchmark-write-insert": "k6 run --summary-export=output/write.json write-insert.js",
+    "benchmark-write-update": "k6 run --summary-export=output/write.json write-update.js",
     "benchmark-read": "k6 run --summary-export=output/read.json read.js",
+    "benchmark-read-single": "k6 run --summary-export=output/read.json read-single.js",
     "write-results-to-db": "node write-results-db.js",
     "init": "rm -f ./output/*.json && mkdir -p output"
   },

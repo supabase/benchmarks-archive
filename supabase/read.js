@@ -1,13 +1,17 @@
+// This test reads from random rows in a table with 1 million rows
+
 import http from 'k6/http'
 import { Rate } from 'k6/metrics'
 
-const supabaseUrl = __ENV.supabaseUrl
-const supabaseKey = __ENV.supabaseKey
+const supabaseUrl = __ENV.SUPABASE_URL
+const supabaseKey = __ENV.SUPABASE_KEY
 
 const myFailRate = new Rate('failed requests')
 
 export let options = {
   vus: 10,
+  discardResponseBodies: true,
+  compatibilityMode: 'base',
   duration: '30s',
   thresholds: {
     'failed requests': ['rate<0.05'],
@@ -16,26 +20,7 @@ export let options = {
 }
 
 export function setup() {
-  // make sure we are starting off with a clean table
-  // empty the current table
-  const delParams = {
-    headers: {
-      apiKey: supabaseKey,
-      Authorization: `Bearer ${supabaseKey}`,
-    },
-  }
-  http.del(`${supabaseUrl}/rest/v1/read`, {}, delParams)
-
-  // add in 10 rows
-  const insertParams = {
-    headers: {
-      apiKey: supabaseKey,
-      Authorization: `Bearer ${supabaseKey}`,
-      'Content-Type': 'application/json',
-    },
-  }
-  const body = Array.from(Array(10)).map(() => ({}))
-  http.post(`${supabaseUrl}/rest/v1/read`, JSON.stringify(body), insertParams)
+  // see read-setup.js to setup 1 million rows for read test
 }
 
 export default function () {
@@ -46,6 +31,12 @@ export default function () {
       Range: '0-9',
     },
   }
-  const res = http.get(`${supabaseUrl}/rest/v1/read?select=*`, params)
+  const res = http.get(
+    `${supabaseUrl}/rest/v1/read?select=id&id=eq.${Math.floor(Math.random() * 1000000 + 1)}`,
+    params
+  )
   myFailRate.add(res.status !== 200)
+  if (res.status !== 200) {
+    console.log(res.status)
+  }
 }
