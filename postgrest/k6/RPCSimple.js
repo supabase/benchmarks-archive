@@ -7,23 +7,17 @@ const URL = "http://" + __ENV.HOST;
 const RATE = (function(){
   if(__ENV.VERSION == 'v701'){
     switch(__ENV.HOST){
-      case 'c5xlarge':  return 1050;
-      case 't3axlarge': return 800;
-      case 't3alarge':  return 500;
-      case 't3amedium': return 500;
-      case 't3amicro':  return 500;
-      case 't3anano':   return 500;
-      default:          return 500;
+      case 'c5xlarge':  return 2400;
+      case 't3axlarge': return 1600;
+      case 't3anano':   return 1600;
+      default:          return 1500;
     }
   }
   else switch(__ENV.HOST){
-      case 'c5xlarge':  return 1550;
-      case 't3axlarge': return 1200;
-      case 't3alarge':  return 810;
-      case 't3amedium': return 810;
-      case 't3amicro':  return 810;
-      case 't3anano':   return 810;
-      default:          return 500;
+      case 'c5xlarge':  return 3000;
+      case 't3axlarge': return 2200;
+      case 't3anano':   return 2100;
+      default:          return 1000;
     }
 })();
 
@@ -48,6 +42,6 @@ export let options = {
 const myFailRate = new Rate('failed requests');
 
 export default function() {
-  let res = http.get(URL + "/album?select=*,track(*,genre(*))&artist_id=eq.127");
+  let res = http.get(URL + "/rpc/add_them?a=1&b=2&c=3&d=4&e=5");
   myFailRate.add(res.status !== 200);
 }
