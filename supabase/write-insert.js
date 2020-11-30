@@ -9,7 +9,7 @@ const supabaseKey = __ENV.SUPABASE_KEY
 const myFailRate = new Rate('failed requests')
 
 export let options = {
-  vus: 10,
+  vus: 500,
   discardResponseBodies: true,
   duration: '30s',
   thresholds: {
