@@ -27,7 +27,7 @@ export function setup() {
       Range: '0-9',
     },
   }
-  http.post(`${supabaseUrl}/rest/v1/read`, JSON.stringify({ id: 1, slug: 1 }), params)
+  http.post(`${supabaseUrl}/rest/v1/readsingle`, JSON.stringify({ id: 1, slug: 1 }), params)
 }
 
 export default function () {
@@ -38,7 +38,7 @@ export default function () {
       Range: '0-9',
     },
   }
-  const res = http.get(`${supabaseUrl}/rest/v1/read?select=id&id=eq.1`, params)
+  const res = http.get(`${supabaseUrl}/rest/v1/readsingle?select=id&id=eq.1`, params)
   myFailRate.add(res.status !== 200)
   if (res.status !== 200) {
     console.log(res.status)

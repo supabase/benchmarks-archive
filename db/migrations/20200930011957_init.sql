@@ -7,6 +7,12 @@ CREATE TABLE public.read (
   slug int
 );
 
+-- READ SINGLE DATA
+CREATE TABLE public.readsingle (
+  id bigserial PRIMARY KEY,
+  slug int
+);
+
 COMMENT ON TABLE public.read IS 'Table with some data to test read benchmarking';
 
 -- WRITE DATA
