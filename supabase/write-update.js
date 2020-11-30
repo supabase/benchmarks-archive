@@ -23,7 +23,7 @@ export function setup() {
   }
 
 export default function () {
-  const body = [{ slug: 5 }]
+  const body = { slug: 5 }
   const params = {
     headers: {
       apiKey: supabaseKey,
