@@ -24,6 +24,7 @@ export function setup() {
     headers: {
       apiKey: supabaseKey,
       Authorization: `Bearer ${supabaseKey}`,
+      'Content-Type': 'application/json',
     },
   }
   http.del(`${supabaseUrl}/rest/v1/write`, {}, params)
