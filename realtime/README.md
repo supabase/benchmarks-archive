@@ -5,7 +5,7 @@ We have 3 instances: one for Postgres, one for Realtime, and another for the loa
 
 ## Postgres
 Uses `supabase-postgres-0.13.0` AMI. Follow Usage Instructions in the AWS Marketplace page. Then:
-- Run `sql/chinook.sql`:
+- Run `schemas/chinook.sql`:
 ```sh
 psql postgres://postgres:<password>@localhost/postgres -f chinook.sql
 ```
