@@ -105,3 +105,5 @@ dist
 
 # supabase benchmarking files
 output/
+
+realtime/build
