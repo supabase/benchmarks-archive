@@ -1,0 +1,33 @@
+INSERT INTO employee (
+    employee_id,
+    first_name,
+    last_name,
+    title,
+    reports_to,
+    birth_date,
+    hire_date,
+    address,
+    city,
+    state,
+    country,
+    postal_code,
+    phone,
+    fax,
+    email
+) VALUES (
+    0,
+    'Virtual',
+    'User',
+    'Load Tester',
+    0,
+    '1920-01-01',
+    '2020-01-01',
+    '666 10 Street SW',
+    'Calgary',
+    'AB',
+    'Canada',
+    'T2P 5G',
+    '(403) 246-9887',
+    '+1 (403) 246-9899',
+    'vu@chinookcorp.com'
+)
