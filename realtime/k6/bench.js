@@ -22,7 +22,9 @@ export default () => {
         // Send heartbeat to server (timeout is probably around 1m)
         socket.send(JSON.stringify({
           topic: 'phoenix',
-          event: 'heartbeat'
+          event: 'heartbeat',
+          payload: {},
+          ref: 0
         }))
       }, 30 * 1000)
     })
