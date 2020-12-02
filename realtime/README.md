@@ -9,6 +9,10 @@ Uses `supabase-postgres-0.13.0` AMI. Follow Usage Instructions in the AWS Market
 ```sh
 psql postgres://postgres:<password>@localhost/postgres -f chinook.sql
 ```
+- Create publication:
+```sh
+psql postgres://postgres:<password>@localhost/postgres -c 'create publication supabase_realtime for all tables'
+```
 - Run `sql/insert.sql` once per second:
 ```sh
 while true; do psql postgres://postgres:<password>@localhost/postgres -f insert.sql; sleep 1; done
