@@ -1,8 +1,11 @@
 let
   region = "us-east-2";
   accessKeyId = "default"; ## aws profile
+  deployAll = builtins.getEnv "PGRBENCH_DEPLOY_ALL" == "all";
+  pgrstNightly = builtins.getEnv "PGRST_VER" == "nightly";
   pkgs = import <nixpkgs> {};
-  serverConf = let pgrst = import ./pgrst.nix { stdenv = pkgs.stdenv; fetchurl = pkgs.fetchurl; }; in
+  serverConf =
+  let pgrst = import ./pgrst.nix { stdenv = pkgs.stdenv; fetchurl = pkgs.fetchurl; isNightly = pgrstNightly; }; in
   {
     environment.systemPackages = [
       pgrst
@@ -11,12 +14,12 @@ let
     services.postgresql = {
       enable = true;
       package = pkgs.postgresql_12;
-      authentication = pkgs.lib.mkOverride 10 ''
+      authentication = ''
         local   all all trust
         host    all all 127.0.0.1/32 trust
         host    all all ::1/128 trust
       '';
-      initialScript = ./sql/chinook.sql; # Here goes the sample db
+      initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
     };
 
     systemd.services.postgrest = {
@@ -114,85 +117,6 @@ in {
     boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1"; # Fix for https://github.com/NixOS/nixpkgs/issues/62824#issuecomment-516369379
   } // serverConf;
 
-  t3amicro = {resources, ...}: {
-    deployment = {
-      targetEnv = "ec2";
-      ec2 = {
-        inherit region accessKeyId;
-        instanceType             = "t3a.micro";
-        associatePublicIpAddress = true;
-        ebsInitialRootDiskSize   = 10;
-        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
-        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
-        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
-      };
-    };
-    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1"; # Fix for https://github.com/NixOS/nixpkgs/issues/62824#issuecomment-516369379
-  } // serverConf;
-
-  t3amedium = {resources, ...}: {
-    deployment = {
-      targetEnv = "ec2";
-      ec2 = {
-        inherit region accessKeyId;
-        instanceType             = "t3a.medium";
-        associatePublicIpAddress = true;
-        ebsInitialRootDiskSize   = 10;
-        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
-        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
-        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
-      };
-    };
-    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1"; # Fix for https://github.com/NixOS/nixpkgs/issues/62824#issuecomment-516369379
-  } // serverConf;
-
-  t3alarge = {resources, ...}: {
-    deployment = {
-      targetEnv = "ec2";
-      ec2 = {
-        inherit region accessKeyId;
-        instanceType             = "t3a.large";
-        associatePublicIpAddress = true;
-        ebsInitialRootDiskSize   = 10;
-        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
-        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
-        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
-      };
-    };
-    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1";
-  } // serverConf;
-
-  t3axlarge = {resources, ...}: {
-    deployment = {
-      targetEnv = "ec2";
-      ec2 = {
-        inherit region accessKeyId;
-        instanceType             = "t3a.xlarge";
-        associatePublicIpAddress = true;
-        ebsInitialRootDiskSize   = 10;
-        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
-        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
-        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
-      };
-    };
-    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1";
-  } // serverConf;
-
-  c5xlarge = {resources, ...}: {
-    deployment = {
-      targetEnv = "ec2";
-      ec2 = {
-        inherit region accessKeyId;
-        instanceType             = "c5.xlarge";
-        associatePublicIpAddress = true;
-        ebsInitialRootDiskSize   = 10;
-        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
-        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
-        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
-      };
-    };
-  } // serverConf;
-
   client = {nodes, resources, ...}: {
     environment.systemPackages = [
       pkgs.k6
@@ -217,6 +141,7 @@ in {
     ];
     networking.hosts = {
       "${nodes.t3anano.config.networking.privateIPv4}"   = [ "t3anano" ];
+    } // pkgs.lib.optionalAttrs deployAll {
       "${nodes.t3amicro.config.networking.privateIPv4}"  = [ "t3amicro" ];
       "${nodes.t3amedium.config.networking.privateIPv4}" = [ "t3amedium" ];
       "${nodes.t3alarge.config.networking.privateIPv4}"  = [ "t3alarge" ];
@@ -224,4 +149,85 @@ in {
       "${nodes.c5xlarge.config.networking.privateIPv4}"  = [ "c5xlarge" ];
     };
   };
+} //
+pkgs.lib.optionalAttrs deployAll
+{
+  t3amicro =  {resources, ...}: {
+    deployment = {
+      targetEnv = "ec2";
+      ec2 = {
+        inherit region accessKeyId;
+        instanceType             = "t3a.micro";
+        associatePublicIpAddress = true;
+        ebsInitialRootDiskSize   = 10;
+        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
+        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
+        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
+      };
+    };
+    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1"; # Fix for https://github.com/NixOS/nixpkgs/issues/62824#issuecomment-516369379
+  } // serverConf;
+
+  t3amedium =  {resources, ...}: {
+    deployment = {
+      targetEnv = "ec2";
+      ec2 = {
+        inherit region accessKeyId;
+        instanceType             = "t3a.medium";
+        associatePublicIpAddress = true;
+        ebsInitialRootDiskSize   = 10;
+        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
+        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
+        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
+      };
+    };
+    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1"; # Fix for https://github.com/NixOS/nixpkgs/issues/62824#issuecomment-516369379
+  } // serverConf;
+
+  t3alarge =  {resources, ...}:  {
+    deployment = {
+      targetEnv = "ec2";
+      ec2 = {
+        inherit region accessKeyId;
+        instanceType             = "t3a.large";
+        associatePublicIpAddress = true;
+        ebsInitialRootDiskSize   = 10;
+        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
+        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
+        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
+      };
+    };
+    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1";
+  } // serverConf;
+
+  t3axlarge =  {resources, ...}: {
+    deployment = {
+      targetEnv = "ec2";
+      ec2 = {
+        inherit region accessKeyId;
+        instanceType             = "t3a.xlarge";
+        associatePublicIpAddress = true;
+        ebsInitialRootDiskSize   = 10;
+        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
+        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
+        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
+      };
+    };
+    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1";
+  } // serverConf;
+
+  c5xlarge =  {resources, ...}: {
+    deployment = {
+      targetEnv = "ec2";
+      ec2 = {
+        inherit region accessKeyId;
+        instanceType             = "c5.xlarge";
+        associatePublicIpAddress = true;
+        ebsInitialRootDiskSize   = 10;
+        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
+        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
+        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
+      };
+    };
+  } // serverConf;
 }
