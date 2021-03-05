@@ -2,10 +2,17 @@ import { Rate } from "k6/metrics";
 import { check, group, sleep } from 'k6';
 import http from 'k6/http';
 
-const URL = "http://" + __ENV.HOST;
+const NGINX_PREFIX = __ENV.PGRBENCH_SETUP.startsWith("with-nginx")?"/api":"";
+
+const URL = "http://" + __ENV.HOST + NGINX_PREFIX;
 
 const RATE = (function(){
-  if(__ENV.VERSION == 'v701'){
+  //TODO: remove conditionals
+  if(__ENV.PGRBENCH_SETUP == "with-nginx")
+    return 1450;
+  else if(__ENV.PGRBENCH_SETUP == "with-nginx-best-config")
+    return 1800;
+  else if(__ENV.VERSION == 'v701'){
     switch(__ENV.HOST){
       case 'c5xlarge':  return 2400;
       case 't3axlarge': return 1600;
