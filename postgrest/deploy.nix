@@ -1,11 +1,16 @@
 let
   region = "us-east-2";
   accessKeyId = "default"; ## aws profile
-  deployAll = builtins.getEnv "PGRBENCH_DEPLOY_ALL" == "all";
-  pgrstNightly = builtins.getEnv "PGRST_VER" == "nightly";
+  env = rec {
+    pgrbenchSetup = builtins.getEnv "PGRBENCH_SETUP";
+    deployAll     = builtins.getEnv "PGRBENCH_DEPLOY_ALL" == "all";
+    pgrstNightly  = builtins.getEnv "PGRST_VER" == "nightly";
+    withNginx     = pgrbenchSetup == "with-nginx";
+    withNginxBest = pgrbenchSetup == "with-nginx-best-config";
+  };
   pkgs = import <nixpkgs> {};
   serverConf =
-  let pgrst = import ./pgrst.nix { stdenv = pkgs.stdenv; fetchurl = pkgs.fetchurl; isNightly = pgrstNightly; }; in
+  let pgrst = import ./pgrst.nix { stdenv = pkgs.stdenv; fetchurl = pkgs.fetchurl; isNightly = env.pgrstNightly; }; in
   {
     environment.systemPackages = [
       pgrst
@@ -34,7 +39,20 @@ let
             db-schema = "public"
             db-anon-role = "postgres"
 
-            server-port = 80
+            ${
+              if env.withNginx
+              then ''
+                server-port = "3000"
+              ''
+              else if env.withNginxBest
+              then ''
+                server-unix-socket = "/tmp/pgrst.sock"
+                server-unix-socket-mode = "777"
+              ''
+              else ''
+                server-port = "80"
+              ''
+            }
 
             jwt-secret = "reallyreallyreallyreallyverysafe"
           '';
@@ -42,6 +60,41 @@ let
           "${pgrst}/bin/postgrest ${pgrstConf}";
         Restart = "always";
       };
+    };
+
+    services.nginx = {
+      enable = env.withNginx || env.withNginxBest;
+      config = ''
+        events {}
+
+        http {
+          upstream postgrest {
+            ${
+              if env.withNginxBest
+              then ''
+                server unix:/tmp/pgrst.sock;
+                keepalive 64;
+                keepalive_timeout 120s;
+              ''
+              else ''
+                server localhost:3000;
+              ''
+            }
+          }
+
+          server {
+            listen 80 default_server;
+            listen [::]:80 default_server;
+
+            location /api/ {
+              proxy_set_header  Connection "";
+              proxy_set_header  Accept-Encoding  "";
+              proxy_http_version 1.1;
+              proxy_pass http://postgrest/;
+            }
+          }
+        }
+      '';
     };
 
     networking.firewall.allowedTCPPorts = [ 80 ];
@@ -121,6 +174,9 @@ in {
     environment.systemPackages = [
       pkgs.k6
     ];
+    environment.variables = {
+      PGRBENCH_SETUP = env.pgrbenchSetup;
+    };
     deployment = {
       targetEnv = "ec2";
       ec2 = {
@@ -141,7 +197,7 @@ in {
     ];
     networking.hosts = {
       "${nodes.t3anano.config.networking.privateIPv4}"   = [ "t3anano" ];
-    } // pkgs.lib.optionalAttrs deployAll {
+    } // pkgs.lib.optionalAttrs env.deployAll {
       "${nodes.t3amicro.config.networking.privateIPv4}"  = [ "t3amicro" ];
       "${nodes.t3amedium.config.networking.privateIPv4}" = [ "t3amedium" ];
       "${nodes.t3alarge.config.networking.privateIPv4}"  = [ "t3alarge" ];
@@ -150,7 +206,7 @@ in {
     };
   };
 } //
-pkgs.lib.optionalAttrs deployAll
+pkgs.lib.optionalAttrs env.deployAll
 {
   t3amicro =  {resources, ...}: {
     deployment = {

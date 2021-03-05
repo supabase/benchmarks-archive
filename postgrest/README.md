@@ -60,6 +60,24 @@ pgrbench-k6 t3anano k6/GETSingle.js
 ## You will see the k6 logo and runs here
 ```
 
+## Nginx
+
+To load test with nginx included do:
+
+```bash
+export PGRBENCH_SETUP=with-nginx
+pgrbench-deploy
+```
+
+Also to test nginx with a better config(unix socket + keepalive)
+
+```bash
+export PGRBENCH_SETUP=with-nginx-best-config
+pgrbench-deploy
+```
+
+Then run the k6 tests the same as above.
+
 ## Notes
 
 - Scenarios to test:
