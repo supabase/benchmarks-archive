@@ -1,9 +1,9 @@
 name: Supabase Benchmark
 
 # Runs the Supabase benchmark every day and pushes the results to a Supabase table
-on:
-  schedule:
-    - cron: "* 1 * * *"
+# on:
+#   schedule:
+#     - cron: "* 1 * * *"
 
 jobs:
   supbase-benchmark:
