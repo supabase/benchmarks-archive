@@ -8,14 +8,14 @@ export const options = {
       executor: 'constant-vus',
       exec: 'websockets',
       duration: '30s',
-      vus: 5
+      vus: 1000
     },
     post_json: {
       executor: 'constant-vus',
       exec: 'post_json',
       startTime: '10s',
       duration: '20s',
-      vus: 5
+      vus: 200
     },
   }
 }
