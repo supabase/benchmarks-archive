@@ -1,15 +1,10 @@
-{ stdenv, fetchurl, isNightly }:
+{ stdenv, fetchurl }:
 
 stdenv.mkDerivation {
   name = "postgrest";
-  src = if isNightly
-    then fetchurl {
-      url = "https://github.com/PostgREST/postgrest/releases/download/nightly/postgrest-nightly-2020-12-09-14-20-ebd474a-linux-x64-static.tar.xz";
-      sha256 = "17si275mjc0mzz7zr9pl05bzg8h7xkrpvnfsf563bkwngyla7cqk";
-    }
-    else fetchurl {
-      url = "https://github.com/PostgREST/postgrest/releases/download/v7.0.1/postgrest-v7.0.1-linux-x64-static.tar.xz";
-      sha256 = "0h5zlpz7f7x220pklp28pggkpai7vfv06dpdal4xpq8bc56gf27p";
+  src = fetchurl {
+      url = "https://github.com/PostgREST/postgrest/releases/download/v9.0.0/postgrest-v9.0.0-linux-static-x64.tar.xz";
+      sha256 = "0gngjj7bc93v9dzyxxlmqiza2p3dm8w5vp6wf26vlmwm2zm22j7a";
     };
   phases = ["installPhase" "patchPhase"];
   installPhase = ''

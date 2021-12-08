@@ -67,6 +67,6 @@ pkgs.mkShell {
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs}:."
     export NIXOPS_STATE=".deployment.nixops"
-    export PGRST_VER="nightly"
+    export PGRBENCH_CONN_TYPE="unix-socket"
   '';
 }
