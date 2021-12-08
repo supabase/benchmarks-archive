@@ -2,15 +2,15 @@ let
   region = "us-east-2";
   accessKeyId = "default"; ## aws profile
   env = rec {
-    pgrbenchSetup = builtins.getEnv "PGRBENCH_SETUP";
-    deployAll     = builtins.getEnv "PGRBENCH_DEPLOY_ALL" == "all";
-    pgrstNightly  = builtins.getEnv "PGRST_VER" == "nightly";
-    withNginx     = pgrbenchSetup == "with-nginx";
-    withNginxBest = pgrbenchSetup == "with-nginx-best-config";
+    pgrbenchSetup    = builtins.getEnv "PGRBENCH_SETUP";
+    pgrbenchConnType = builtins.getEnv "PGRBENCH_CONN_TYPE";
+    deployAll        = builtins.getEnv "PGRBENCH_DEPLOY_ALL" == "all";
+    withNginx        = pgrbenchSetup == "with-nginx";
+    withUnixSocket   = pgrbenchConnType == "unix-socket";
   };
   pkgs = import <nixpkgs> {};
   serverConf =
-  let pgrst = import ./pgrst.nix { stdenv = pkgs.stdenv; fetchurl = pkgs.fetchurl; isNightly = env.pgrstNightly; }; in
+  let pgrst = pkgs.callPackage ./pgrst.nix {}; in
   {
     environment.systemPackages = [
       pgrst
@@ -35,19 +35,19 @@ let
       serviceConfig = {
         ExecStart =
           let pgrstConf = pkgs.writeText "pgrst.conf" ''
-            db-uri = "postgres://postgres@localhost/postgres"
+            db-uri = "postgres://postgres@${if env.withUnixSocket then "" else "localhost"}/postgres"
             db-schema = "public"
             db-anon-role = "postgres"
 
             ${
-              if env.withNginx
-              then ''
-                server-port = "3000"
-              ''
-              else if env.withNginxBest
+              if env.withNginx && env.withUnixSocket
               then ''
                 server-unix-socket = "/tmp/pgrst.sock"
                 server-unix-socket-mode = "777"
+              ''
+              else if env.withNginx
+              then ''
+                server-port = "3000"
               ''
               else ''
                 server-port = "80"
@@ -63,30 +63,30 @@ let
     };
 
     services.nginx = {
-      enable = env.withNginx || env.withNginxBest;
+      enable = env.withNginx;
       config = ''
         events {}
 
         http {
           upstream postgrest {
             ${
-              if env.withNginxBest
+              if env.withUnixSocket
               then ''
                 server unix:/tmp/pgrst.sock;
-                keepalive 64;
-                keepalive_timeout 120s;
               ''
               else ''
                 server localhost:3000;
               ''
             }
+            keepalive 64;
+            keepalive_timeout 120s;
           }
 
           server {
             listen 80 default_server;
             listen [::]:80 default_server;
 
-            location /api/ {
+            location / {
               proxy_set_header  Connection "";
               proxy_set_header  Accept-Encoding  "";
               proxy_http_version 1.1;
@@ -174,9 +174,6 @@ in {
     environment.systemPackages = [
       pkgs.k6
     ];
-    environment.variables = {
-      PGRBENCH_SETUP = env.pgrbenchSetup;
-    };
     deployment = {
       targetEnv = "ec2";
       ec2 = {

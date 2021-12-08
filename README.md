@@ -9,6 +9,6 @@ Infrastucture benchmarks at Supabase.
 ├── postgrest               # PostgREST benchmark tests/code
 ├── realtime                # Realtime benchmark tests/code
 ├── supabase                # Supabase (full system) benchmark tests/code
-└── migrations              # Database migrations. All results are stored in a Supabase database  
+└── migrations              # Database migrations. All results are stored in a Supabase database
 ```
 
