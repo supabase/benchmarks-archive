@@ -1,104 +1,16 @@
 let
   region = "us-east-2";
   accessKeyId = "default"; ## aws profile
-  env = rec {
-    pgrbenchSetup    = builtins.getEnv "PGRBENCH_SETUP";
-    pgrbenchConnType = builtins.getEnv "PGRBENCH_CONN_TYPE";
-    deployAll        = builtins.getEnv "PGRBENCH_DEPLOY_ALL" == "all";
-    withNginx        = pgrbenchSetup == "with-nginx";
-    withUnixSocket   = pgrbenchConnType == "unix-socket";
+  env = {
+    #export PGRBENCH_SETUP="with-nginx"
+    withNginx      = builtins.getEnv "PGRBENCH_SETUP" == "with-nginx";
+    withUnixSocket = builtins.getEnv "PGRBENCH_CONN_TYPE" == "unix-socket";
+    #export PGRBENCH_SEPARATE_PG="true"
+    withSeparatePg = builtins.getEnv "PGRBENCH_SEPARATE_PG" == "true";
+    #export PGRBENCH_PG_INSTANCE_TYPE="t3a.nano"
+    pgInstanceType = builtins.getEnv "PGRBENCH_PG_INSTANCE_TYPE";
   };
   pkgs = import <nixpkgs> {};
-  serverConf =
-  let pgrst = pkgs.callPackage ./pgrst.nix {}; in
-  {
-    environment.systemPackages = [
-      pgrst
-    ];
-
-    services.postgresql = {
-      enable = true;
-      package = pkgs.postgresql_12;
-      authentication = ''
-        local   all all trust
-        host    all all 127.0.0.1/32 trust
-        host    all all ::1/128 trust
-      '';
-      initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
-    };
-
-    systemd.services.postgrest = {
-      enable      = true;
-      description = "postgrest daemon";
-      after       = [ "postgresql.service" ];
-      wantedBy    = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart =
-          let pgrstConf = pkgs.writeText "pgrst.conf" ''
-            db-uri = "postgres://postgres@${if env.withUnixSocket then "" else "localhost"}/postgres"
-            db-schema = "public"
-            db-anon-role = "postgres"
-
-            ${
-              if env.withNginx && env.withUnixSocket
-              then ''
-                server-unix-socket = "/tmp/pgrst.sock"
-                server-unix-socket-mode = "777"
-              ''
-              else if env.withNginx
-              then ''
-                server-port = "3000"
-              ''
-              else ''
-                server-port = "80"
-              ''
-            }
-
-            jwt-secret = "reallyreallyreallyreallyverysafe"
-          '';
-          in
-          "${pgrst}/bin/postgrest ${pgrstConf}";
-        Restart = "always";
-      };
-    };
-
-    services.nginx = {
-      enable = env.withNginx;
-      config = ''
-        events {}
-
-        http {
-          upstream postgrest {
-            ${
-              if env.withUnixSocket
-              then ''
-                server unix:/tmp/pgrst.sock;
-              ''
-              else ''
-                server localhost:3000;
-              ''
-            }
-            keepalive 64;
-            keepalive_timeout 120s;
-          }
-
-          server {
-            listen 80 default_server;
-            listen [::]:80 default_server;
-
-            location / {
-              proxy_set_header  Connection "";
-              proxy_set_header  Accept-Encoding  "";
-              proxy_http_version 1.1;
-              proxy_pass http://postgrest/;
-            }
-          }
-        }
-      '';
-    };
-
-    networking.firewall.allowedTCPPorts = [ 80 ];
-  };
 in {
   network.description = "postgrest benchmark";
 
@@ -149,12 +61,14 @@ in {
       rules = [
         { fromPort = 80;  toPort = 80;    sourceIp = "0.0.0.0/0"; }
         { fromPort = 22;  toPort = 22;    sourceIp = "0.0.0.0/0"; }
-        { fromPort = 0;   toPort = 65535; sourceIp = resources.vpcSubnets.pgrstBenchSubnet.cidrBlock; } # For internal access on the VPC
+        # protocol -1 allows icmp traffic in addition to tcp/udp
+        { protocol = "-1"; fromPort = 0;   toPort = 65535; sourceIp = resources.vpcSubnets.pgrstBenchSubnet.cidrBlock; } # For internal access on the VPC
       ];
     };
   };
 
-  t3anano = {resources, ...}: {
+  pgrstServer = {nodes, resources, ...}: let pgrst = pkgs.callPackage ./pgrst.nix {}; in
+  {
     deployment = {
       targetEnv = "ec2";
       ec2 = {
@@ -168,7 +82,118 @@ in {
       };
     };
     boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1"; # Fix for https://github.com/NixOS/nixpkgs/issues/62824#issuecomment-516369379
-  } // serverConf;
+
+    environment.systemPackages = [
+      pgrst
+    ];
+
+    services.postgresql = pkgs.lib.mkIf (!env.withSeparatePg) {
+      enable = true;
+      package = pkgs.postgresql_12;
+      authentication = ''
+        local   all all trust
+        host    all all 127.0.0.1/32 trust
+        host    all all ::1/128 trust
+      '';
+      initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
+    };
+
+    systemd.services.postgrest = {
+      enable      = true;
+      description = "postgrest daemon";
+      after       = [ "postgresql.service" ];
+      wantedBy    = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStart =
+          let
+            pgHost =
+              if env.withSeparatePg then "pg"
+              else if env.withUnixSocket then ""
+              else "localhost";
+            pgrstConf = pkgs.writeText "pgrst.conf" ''
+              db-uri = "postgres://postgres@${pgHost}/postgres"
+              db-schema = "public"
+              db-anon-role = "postgres"
+              db-use-legacy-gucs = false
+              ${
+                if env.withSeparatePg then
+                  with nodes.pg.config.deployment.ec2;
+                  ## these db-pool values haven't been proven to increase performance
+                  if instanceType == "t3a.nano" then
+                    "db-pool = 20"
+                  else
+                  if instanceType == "t3a.xlarge" then
+                    "db-pool = 30"
+                  else
+                  if instanceType == "t3a.2xlarge" then
+                    "db-pool = 40"
+                  else ""
+                else ""
+              }
+
+              ${
+                if env.withNginx && env.withUnixSocket
+                then ''
+                  server-unix-socket = "/tmp/pgrst.sock"
+                  server-unix-socket-mode = "777"
+                ''
+                else if env.withNginx
+                then ''
+                  server-port = "3000"
+                ''
+                else ''
+                  server-port = "80"
+                ''
+              }
+
+              jwt-secret = "reallyreallyreallyreallyverysafe"
+            '';
+          in
+          "${pgrst}/bin/postgrest ${pgrstConf}";
+        Restart = "always";
+      };
+    };
+
+    services.nginx = {
+      enable = env.withNginx;
+      config = ''
+        events {}
+
+        http {
+          upstream postgrest {
+            ${
+              if env.withUnixSocket
+              then ''
+                server unix:/tmp/pgrst.sock;
+              ''
+              else ''
+                server localhost:3000;
+              ''
+            }
+            keepalive 64;
+            keepalive_timeout 120s;
+          }
+
+          server {
+            listen 80 default_server;
+            listen [::]:80 default_server;
+
+            location / {
+              proxy_set_header  Connection "";
+              proxy_set_header  Accept-Encoding  "";
+              proxy_http_version 1.1;
+              proxy_pass http://postgrest/;
+            }
+          }
+        }
+      '';
+    };
+
+    networking.firewall.allowedTCPPorts = [ 80 ];
+    networking.hosts = pkgs.lib.optionalAttrs env.withSeparatePg {
+      "${nodes.pg.config.networking.privateIPv4}" = [ "pg" ];
+    };
+  };
 
   client = {nodes, resources, ...}: {
     environment.systemPackages = [
@@ -178,7 +203,7 @@ in {
       targetEnv = "ec2";
       ec2 = {
         inherit region accessKeyId;
-        instanceType             = "t3a.medium";
+        instanceType             = "t3a.xlarge";
         associatePublicIpAddress = true;
         keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
         subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
@@ -193,24 +218,21 @@ in {
       { domain = "root"; type = "soft"; item = "nofile"; value = "5000"; }
     ];
     networking.hosts = {
-      "${nodes.t3anano.config.networking.privateIPv4}"   = [ "t3anano" ];
-    } // pkgs.lib.optionalAttrs env.deployAll {
-      "${nodes.t3amicro.config.networking.privateIPv4}"  = [ "t3amicro" ];
-      "${nodes.t3amedium.config.networking.privateIPv4}" = [ "t3amedium" ];
-      "${nodes.t3alarge.config.networking.privateIPv4}"  = [ "t3alarge" ];
-      "${nodes.t3axlarge.config.networking.privateIPv4}" = [ "t3axlarge" ];
-      "${nodes.c5xlarge.config.networking.privateIPv4}"  = [ "c5xlarge" ];
+      "${nodes.pgrstServer.config.networking.privateIPv4}"   = [ "pgrst" ];
     };
   };
-} //
-pkgs.lib.optionalAttrs env.deployAll
+}
+// pkgs.lib.optionalAttrs env.withSeparatePg
 {
-  t3amicro =  {resources, ...}: {
+  pg = {resources, ...}: rec {
     deployment = {
       targetEnv = "ec2";
       ec2 = {
         inherit region accessKeyId;
-        instanceType             = "t3a.micro";
+        instanceType             =
+          if builtins.stringLength env.pgInstanceType == 0
+          then "t3a.nano"
+          else env.pgInstanceType;
         associatePublicIpAddress = true;
         ebsInitialRootDiskSize   = 10;
         keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
@@ -219,68 +241,68 @@ pkgs.lib.optionalAttrs env.deployAll
       };
     };
     boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1"; # Fix for https://github.com/NixOS/nixpkgs/issues/62824#issuecomment-516369379
-  } // serverConf;
 
-  t3amedium =  {resources, ...}: {
-    deployment = {
-      targetEnv = "ec2";
-      ec2 = {
-        inherit region accessKeyId;
-        instanceType             = "t3a.medium";
-        associatePublicIpAddress = true;
-        ebsInitialRootDiskSize   = 10;
-        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
-        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
-        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
-      };
+    services.postgresql = {
+      enable = true;
+      package = pkgs.postgresql_12;
+      authentication = ''
+        local   all all trust
+        host    all all 127.0.0.1/32 trust
+        host    all all ::1/128 trust
+        host    all all ${resources.vpcSubnets.pgrstBenchSubnet.cidrBlock} trust
+      '';
+      enableTCPIP = true; # listen_adresses = *
+      # Tuned according to https://pgtune.leopard.in.ua
+      settings =
+        if deployment.ec2.instanceType == "t3a.nano" then {
+          max_connections = 200;
+          shared_buffers = "128MB";
+          effective_cache_size = "384MB";
+          maintenance_work_mem = "32MB";
+          checkpoint_completion_target = 0.9;
+          wal_buffers = "3932kB";
+          random_page_cost = 1.1;
+          effective_io_concurrency = 200;
+          work_mem = "655kB";
+          max_worker_processes = 2;
+          max_parallel_workers_per_gather = 1;
+          max_parallel_workers = 2;
+          max_parallel_maintenance_workers = 1;
+        }
+        else if deployment.ec2.instanceType == "t3a.xlarge" then {
+          max_connections = 200;
+          shared_buffers = "4GB";
+          effective_cache_size = "12GB";
+          maintenance_work_mem = "1GB";
+          checkpoint_completion_target = 0.9;
+          wal_buffers = "16MB";
+          random_page_cost = 1.1;
+          effective_io_concurrency = 200;
+          work_mem = "10485kB";
+          max_worker_processes = 4;
+          max_parallel_workers_per_gather = 2;
+          max_parallel_workers = 4;
+          max_parallel_maintenance_workers = 2;
+        }
+        else if deployment.ec2.instanceType == "t3a.2xlarge" then {
+          max_connections = 200;
+          shared_buffers = "8GB";
+          effective_cache_size = "24GB";
+          maintenance_work_mem = "2GB";
+          checkpoint_completion_target = 0.9;
+          wal_buffers = "16MB";
+          random_page_cost = 1.1;
+          effective_io_concurrency = 200;
+          work_mem = "10485kB";
+          max_worker_processes = 8;
+          max_parallel_workers_per_gather = 4;
+          max_parallel_workers = 8;
+          max_parallel_maintenance_workers = 4;
+        }
+        else {};
+      initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
     };
-    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1"; # Fix for https://github.com/NixOS/nixpkgs/issues/62824#issuecomment-516369379
-  } // serverConf;
 
-  t3alarge =  {resources, ...}:  {
-    deployment = {
-      targetEnv = "ec2";
-      ec2 = {
-        inherit region accessKeyId;
-        instanceType             = "t3a.large";
-        associatePublicIpAddress = true;
-        ebsInitialRootDiskSize   = 10;
-        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
-        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
-        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
-      };
-    };
-    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1";
-  } // serverConf;
-
-  t3axlarge =  {resources, ...}: {
-    deployment = {
-      targetEnv = "ec2";
-      ec2 = {
-        inherit region accessKeyId;
-        instanceType             = "t3a.xlarge";
-        associatePublicIpAddress = true;
-        ebsInitialRootDiskSize   = 10;
-        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
-        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
-        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
-      };
-    };
-    boot.loader.grub.device = pkgs.lib.mkForce "/dev/nvme0n1";
-  } // serverConf;
-
-  c5xlarge =  {resources, ...}: {
-    deployment = {
-      targetEnv = "ec2";
-      ec2 = {
-        inherit region accessKeyId;
-        instanceType             = "c5.xlarge";
-        associatePublicIpAddress = true;
-        ebsInitialRootDiskSize   = 10;
-        keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
-        subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
-        securityGroupIds         = [resources.ec2SecurityGroups.pgrstBenchSecGroup.name];
-      };
-    };
-  } // serverConf;
+    networking.firewall.allowedTCPPorts = [ 5432 ];
+  };
 }

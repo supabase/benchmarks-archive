@@ -32,9 +32,9 @@ let
     pkgs.writeShellScriptBin "pgrbench-k6"
       ''
         set -euo pipefail
-        filename=$1$(basename $2 .js)
+        filename=$(basename $1 .js)
 
-        nixops ssh -d pgrbench client k6 run --summary-export=$filename.json -e HOST=$1 - < $2
+        nixops ssh -d pgrbench client k6 run --summary-export=$filename.json - < $1
       '';
   ssh =
     pkgs.writeShellScriptBin "pgrbench-ssh"
