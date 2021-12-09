@@ -27,7 +27,7 @@ pgrbench-deploy
 To explore and connect to the ec2 instances:
 
 ```
-pgrbench-ssh t3anano
+pgrbench-ssh pgrstServer
 
 # psql -U postgres
 # \d
@@ -65,27 +65,53 @@ pgrbench-k6 t3anano k6/GETSingle.js
 To load test with nginx included do:
 
 ```bash
-export PGRBENCH_SETUP=with-nginx
+export PGRBENCH_SETUP="with-nginx"
 pgrbench-deploy
 ```
 
-Also to test nginx with a better config(unix socket + keepalive)
+## Unix socket(default)
+
+To load test connecting pgrest to pg with unix socket, and pgrest to nginx with unix socket.
 
 ```bash
-export PGRBENCH_SETUP=with-nginx-best-config
+export PGRBENCH_CONN_TYPE="unix-socket"
 pgrbench-deploy
 ```
 
-Then run the k6 tests the same as above.
+To use tcp instead, you can do:
 
-## Notes
+```bash
+export PGRBENCH_CONN_TYPE="tcp"
+pgrbench-deploy
+```
 
-- Scenarios to test:
-  - [x]read heavy workload(with resource embedding)
-  - [x]write heavy workload(with and without [specifying-columns](http://postgrest.org/en/v7.0.0/api.html#specifying-columns))
-  - [ ]pg + pgrest on the same machine(unix socket and tcp).
-  - [ ]pg and pgrest on different machines?
-  - [ ]pgrest with `pre-request`?
+## Separate PostgreSQL
+
+To load test with a pg on a different ec2 instance.
+
+```bash
+export PGRBENCH_SEPARATE_PG="true"
+pgrbench-deploy
+```
+
+To change its EC2 instance type(t3a.nano by default):
+
+```bash
+export PGRBENCH_PG_INSTANCE_TYPE="t3a.xlarge"
+pgrbench-deploy
+```
+
+## Scenarios to test
+
+- [x]read heavy workload(with resource embedding)
+- [x]write heavy workload
+- [x]pg + pgrest on the same ec2 instance(unix socket and tcp).
+- [x]pg + pgrest + nginx on the same ec2 instance
+- [x]pg and pgrest(w/o nginx) on separate ec2 instance
+- [x]separate pg with different type of ec2 instances and tuned with https://pgtune.leopard.in.ua/#/
+- [ ]pgrest with `pre-request`
+- [ ]insertions with [specifying-columns](http://postgrest.org/en/v7.0.0/api.html#specifying-columns)
+- [ ]a slow rpc with `pg_sleep`
 
 ## Other benchmarks
 
