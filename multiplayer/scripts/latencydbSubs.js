@@ -10,9 +10,17 @@ const URL = `${socketURI}?apikey=${token}`;
 const latencyTrend = new Trend('latency_trend');
 const counterReceived = new Counter('received_updates');
 
+const to = {};
+const started = Math.floor((new Date()).getTime() / 1000);
+for (let i = 0; i < 300; i++) {
+  to[`received_updates{timeMark:${started + i}}`] = ['count>=0'];
+}
+
 export const options = {
   duration: '5m',
   vus: 1,
+  thresholds: to,
+  summaryTrendStats: ['avg', 'med', 'p(99)', 'p(95)', 'p(0.1)', 'count'],
 };
 
 export default () => {
@@ -55,7 +63,7 @@ export default () => {
       }
 
       latencyTrend.add(now - updated, { type: type });
-      counterReceived.add(1);
+      counterReceived.add(1, { timeMark: Math.floor(now.getTime() / 1000) });
 
       check(msg, {
         'got realtime notification': (msg) => msg.topic === 'realtime:*',
