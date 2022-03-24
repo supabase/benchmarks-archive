@@ -1,7 +1,7 @@
 let
   region = "eu-central-1";
   accessKeyId = "supabase-dev"; ## aws profile
-  sysbench = import ./sysbench.nix { stdenv = pkgs.stdenv;  fetchFromGitHub = pkgs.fetchFromGitHub ; autoreconfHook = pkgs.autoreconfHook ; pkg-config = pkgs.pkg-config ; libaio = pkgs.libaio ; postgresql = pkgs.postgresql_14; };
+  sysbench = pkgs.callPackage ./sysbench.nix { postgresql = pkgs.postgresql_14; };
   env = rec {
     pgrbenchSetup = builtins.getEnv "PGRBENCH_SETUP";
     deployAll     = builtins.getEnv "PGRBENCH_DEPLOY_ALL" == "all";
