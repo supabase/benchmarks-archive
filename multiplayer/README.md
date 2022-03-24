@@ -37,14 +37,16 @@ RATE=4 k6 run scripts/latency.js --summary-trend-stats="avg,med,p(99),p(95),p(0.
 - Set `PG_HOST` to the host address of postgresql server; default: `localhost`;
 - Set `MP_TOKEN` to the token for multiplayer
 - Set `MP_URI` to the public URL of Multiplayer instance; ex: `ws://{proj_ref}.multiplayer.red/socket/websocket`
+- Set `DURATION` to vary duration of load (note actual load is going to start 60 sec after subscribers start to connect);
 - Set `RATE` to vary rate of insert actions;
-- `options.duration` may be not higher then 1 minute because of current bug in MP;
-- Tweak`RATE` and `options.vus` in `bench.js` to control number of connected client to MultiPlayer and rate of inserts in DB;
+- Tweak`RATE` on `latencydbLoader.js` and `--vus` in `latencydbSubs.js` to control number of connected clients to MultiPlayer and rate of inserts in DB;
 - Run locally built k6.
 
 ```sh
-RATE=4 ./k6 run scripts/latency.js --summary-trend-stats="avg,med,p(99),p(95),p(0.1),p(90),p(0.01),count" --vus=5
+make delay=60 rate=20 conns=100 db_test
 ```
+
+Tweak `rate` and `conns` in the command. delay depends on conns number and should be around 60 (sec) for 200 users.
 
 # Result
 

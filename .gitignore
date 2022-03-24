@@ -109,3 +109,4 @@ output/
 
 # nixops sqlite db(used in the postgrest benchmark)
 postgrest/.deployment.nixops*
+k6
