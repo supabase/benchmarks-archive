@@ -1,7 +1,9 @@
 let
   region = "eu-central-1";
   accessKeyId = "supabase-dev"; ## aws profile
-  sysbench = pkgs.callPackage ./sysbench.nix { postgresql = pkgs.postgresql_14; };
+  sysbench = pkgs.sysbench.overrideAttrs (oldAttrs: rec {
+      configureFlags = oldAttrs.configureFlags ++  [ "--with-pgsql" "--without-mysql" ];
+    });
   env = rec {
     pgrbenchSetup = builtins.getEnv "PGRBENCH_SETUP";
     deployAll     = builtins.getEnv "PGRBENCH_DEPLOY_ALL" == "all";
