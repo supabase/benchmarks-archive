@@ -48,6 +48,16 @@ make delay=60 rate=20 conns=100 db_test
 
 Tweak `rate` and `conns` in the command. delay depends on conns number and should be around 60 (sec) for 200 users.
 
+3. Load Demo project in fly
+
+Everything is just like in the 2.
+
+But command is the following
+
+```sh
+make delay=60 rate=20 conns=100 demo_test
+```
+
 # Result
 
 <https://www.notion.so/supabase/Multiplayer-Benchmarks-bce7fce7c8bd4ea7a9a7b3ce59562d80>
