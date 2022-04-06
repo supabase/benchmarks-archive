@@ -2,13 +2,13 @@ let
   region = "us-east-2";
   accessKeyId = "default"; ## aws profile
   env = {
-    #export PGRBENCH_SETUP="with-nginx"
-    withNginx      = builtins.getEnv "PGRBENCH_SETUP" == "with-nginx";
-    withUnixSocket = builtins.getEnv "PGRBENCH_CONN_TYPE" == "unix-socket";
-    #export PGRBENCH_SEPARATE_PG="true"
-    withSeparatePg = builtins.getEnv "PGRBENCH_SEPARATE_PG" == "true";
-    #export PGRBENCH_PG_INSTANCE_TYPE="t3a.nano"
-    pgInstanceType = builtins.getEnv "PGRBENCH_PG_INSTANCE_TYPE";
+    withNginx         = builtins.getEnv "PGRBENCH_WITH_NGINX" == "true";
+    withUnixSocket    = builtins.getEnv "PGRBENCH_WITH_UNIX_SOCKET" == "true";
+    withSeparatePg    = builtins.getEnv "PGRBENCH_SEPARATE_PG" == "true";
+
+    pgInstanceType    = builtins.getEnv "PGRBENCH_PG_INSTANCE_TYPE";
+    pgrstInstanceType = builtins.getEnv "PGRBENCH_PGRST_INSTANCE_TYPE";
+    pgrstPool         = builtins.getEnv "PGRBENCH_PGRST_POOL";
   };
   pkgs = import <nixpkgs> {};
 in {
@@ -73,7 +73,10 @@ in {
       targetEnv = "ec2";
       ec2 = {
         inherit region accessKeyId;
-        instanceType             = "t3a.nano";
+        instanceType             =
+          if builtins.stringLength env.pgrstInstanceType == 0
+          then "t3a.nano"
+          else env.pgrstInstanceType;
         associatePublicIpAddress = true;
         ebsInitialRootDiskSize   = 10;
         keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
@@ -115,21 +118,7 @@ in {
               db-schema = "public"
               db-anon-role = "postgres"
               db-use-legacy-gucs = false
-              ${
-                if env.withSeparatePg then
-                  with nodes.pg.config.deployment.ec2;
-                  ## these db-pool values haven't been proven to increase performance
-                  if instanceType == "t3a.nano" then
-                    "db-pool = 20"
-                  else
-                  if instanceType == "t3a.xlarge" then
-                    "db-pool = 30"
-                  else
-                  if instanceType == "t3a.2xlarge" then
-                    "db-pool = 40"
-                  else ""
-                else ""
-              }
+              db-pool = ${if builtins.stringLength env.pgrstPool == 0 then "20" else env.pgrstPool}
 
               ${
                 if env.withNginx && env.withUnixSocket

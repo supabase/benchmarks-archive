@@ -33,7 +33,7 @@ export default function() {
   , fax:         '+1 (403) 246-9899'
   , email:       'vu' + __ITER + '@chinookcorp.com'
   }));
-  let res = http.post(URL + "/employee", body, {headers: { 'Content-Type': 'application/json' }});
+  let res = http.post(URL + "/employee?columns=employee_id,first_name,last_name,title,reports_to,birth_date,hire_date,address,city,state,country,postal_code,phone,fax,email", body, {headers: { 'Content-Type': 'application/json' }});
   myFailRate.add(res.status !== 201);
 }
 

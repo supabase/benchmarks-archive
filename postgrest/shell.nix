@@ -19,7 +19,7 @@ let
           nixops create deploy.nix -d pgrbench
         fi
 
-        nixops deploy -k -d pgrbench
+        nixops deploy -k -d pgrbench --allow-reboot --confirm
       '';
   info =
     pkgs.writeShellScriptBin "pgrbench-info"
@@ -67,6 +67,9 @@ pkgs.mkShell {
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs}:."
     export NIXOPS_STATE=".deployment.nixops"
-    export PGRBENCH_CONN_TYPE="unix-socket"
+
+    export PGRBENCH_WITH_NGINX="true"
+    export PGRBENCH_WITH_UNIX_SOCKET="true"
+    export PGRBENCH_SEPARATE_PG="true"
   '';
 }
