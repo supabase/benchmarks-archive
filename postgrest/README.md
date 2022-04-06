@@ -65,7 +65,7 @@ pgrbench-k6 t3anano k6/GETSingle.js
 To load test with nginx included do:
 
 ```bash
-export PGRBENCH_SETUP="with-nginx"
+export PGRBENCH_WITH_NGINX="true"
 pgrbench-deploy
 ```
 
@@ -74,14 +74,14 @@ pgrbench-deploy
 To load test connecting pgrest to pg with unix socket, and pgrest to nginx with unix socket.
 
 ```bash
-export PGRBENCH_CONN_TYPE="unix-socket"
+export PGRBENCH_WITH_UNIX_SOCKET="true"
 pgrbench-deploy
 ```
 
 To use tcp instead, you can do:
 
 ```bash
-export PGRBENCH_CONN_TYPE="tcp"
+export PGRBENCH_WITH_UNIX_SOCKET="false"
 pgrbench-deploy
 ```
 
@@ -94,12 +94,18 @@ export PGRBENCH_SEPARATE_PG="true"
 pgrbench-deploy
 ```
 
-To change its EC2 instance type(t3a.nano by default):
+## Change EC2 instance types
+
+To change pg and PostgREST EC2 instance types(both t3a.nano by default):
 
 ```bash
 export PGRBENCH_PG_INSTANCE_TYPE="t3a.xlarge"
+export PGRBENCH_PGRST_INSTANCE_TYPE="t3a.xlarge"
+
 pgrbench-deploy
 ```
+
+Don't try with ARM-based instances, these don't work currently for NixOps.
 
 ## Scenarios to test
 
