@@ -11,6 +11,7 @@ let
     pgrstPool         = builtins.getEnv "PGRBENCH_PGRST_POOL";
   };
   pkgs = import <nixpkgs> {};
+  postgresConfigs = import ../postgresql/postgres.nix;
 in {
   network.description = "postgrest benchmark";
 
@@ -213,7 +214,7 @@ in {
 }
 // pkgs.lib.optionalAttrs env.withSeparatePg
 {
-  pg = {resources, ...}: rec {
+  pg = {resources, nodes, ...}: rec {
     deployment = {
       targetEnv = "ec2";
       ec2 = {
@@ -242,53 +243,7 @@ in {
       '';
       enableTCPIP = true; # listen_adresses = *
       # Tuned according to https://pgtune.leopard.in.ua
-      settings =
-        if deployment.ec2.instanceType == "t3a.nano" then {
-          max_connections = 200;
-          shared_buffers = "128MB";
-          effective_cache_size = "384MB";
-          maintenance_work_mem = "32MB";
-          checkpoint_completion_target = 0.9;
-          wal_buffers = "3932kB";
-          random_page_cost = 1.1;
-          effective_io_concurrency = 200;
-          work_mem = "655kB";
-          max_worker_processes = 2;
-          max_parallel_workers_per_gather = 1;
-          max_parallel_workers = 2;
-          max_parallel_maintenance_workers = 1;
-        }
-        else if deployment.ec2.instanceType == "t3a.xlarge" then {
-          max_connections = 200;
-          shared_buffers = "4GB";
-          effective_cache_size = "12GB";
-          maintenance_work_mem = "1GB";
-          checkpoint_completion_target = 0.9;
-          wal_buffers = "16MB";
-          random_page_cost = 1.1;
-          effective_io_concurrency = 200;
-          work_mem = "10485kB";
-          max_worker_processes = 4;
-          max_parallel_workers_per_gather = 2;
-          max_parallel_workers = 4;
-          max_parallel_maintenance_workers = 2;
-        }
-        else if deployment.ec2.instanceType == "t3a.2xlarge" then {
-          max_connections = 200;
-          shared_buffers = "8GB";
-          effective_cache_size = "24GB";
-          maintenance_work_mem = "2GB";
-          checkpoint_completion_target = 0.9;
-          wal_buffers = "16MB";
-          random_page_cost = 1.1;
-          effective_io_concurrency = 200;
-          work_mem = "10485kB";
-          max_worker_processes = 8;
-          max_parallel_workers_per_gather = 4;
-          max_parallel_workers = 8;
-          max_parallel_maintenance_workers = 4;
-        }
-        else {};
+      settings = builtins.getAttr nodes.pg.config.deployment.ec2.instanceType postgresConfigs;
       initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
     };
 
