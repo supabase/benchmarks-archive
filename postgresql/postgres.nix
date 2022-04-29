@@ -1,6 +1,6 @@
 {
   "t3a.nano" = {
-     max_connections = 200;
+     max_connections = 40;
      shared_buffers = "128MB";
      work_mem = "655kB";
      maintenance_work_mem = "32MB";
@@ -15,6 +15,7 @@
 
      wal_level = "minimal";
      archive_mode = "off";
+     max_wal_senders = 0;
      wal_buffers = "3932kB";
      min_wal_size = "2GB";
      max_wal_size = "8GB";
@@ -184,7 +185,7 @@
     min_wal_size = "2GB";
   };
   "m5a.8xlarge" = {
-    max_connections = 300;
+    max_connections = 600;
     shared_buffers = "32GB";
     work_mem = "27962kB";
     maintenance_work_mem = "2GB";
@@ -206,7 +207,7 @@
     max_wal_size = "8GB";
   };
   "m5a.12xlarge" = {
-    max_connections = 300;
+    max_connections = 800;
     shared_buffers = "48GB";
     work_mem = "41943kB";
     maintenance_work_mem = "2GB";
@@ -228,7 +229,7 @@
     min_wal_size = "2GB";
   };
   "m5a.16xlarge" = {
-    max_connections = 300;
+    max_connections = 1000;
     shared_buffers = "64GB";
     work_mem = "83886kB";
     maintenance_work_mem = "2GB";
