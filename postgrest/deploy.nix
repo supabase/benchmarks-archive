@@ -188,12 +188,13 @@ in {
   client = {nodes, resources, ...}: {
     environment.systemPackages = [
       pkgs.k6
+      pkgs.postgresql_12 # only used for getting pgbench, no postgresql is started here
     ];
     deployment = {
       targetEnv = "ec2";
       ec2 = {
         inherit region accessKeyId;
-        instanceType             = "t3a.xlarge";
+        instanceType             = "t3a.2xlarge";
         associatePublicIpAddress = true;
         keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
         subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
@@ -209,12 +210,13 @@ in {
     ];
     networking.hosts = {
       "${nodes.pgrstServer.config.networking.privateIPv4}"   = [ "pgrst" ];
+      "${nodes.pg.config.networking.privateIPv4}"            = [ "pg" ];
     };
   };
 }
 // pkgs.lib.optionalAttrs env.withSeparatePg
 {
-  pg = {resources, nodes, ...}: rec {
+  pg = {resources, config, ...}: rec {
     deployment = {
       targetEnv = "ec2";
       ec2 = {
@@ -243,9 +245,24 @@ in {
       '';
       enableTCPIP = true; # listen_adresses = *
       # Tuned according to https://pgtune.leopard.in.ua
-      settings = builtins.getAttr nodes.pg.config.deployment.ec2.instanceType postgresConfigs;
+      settings = builtins.getAttr config.deployment.ec2.instanceType postgresConfigs;
       initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
     };
+    # initialize the pgbench db by prepending to the default postgresql systemd post start
+    # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/databases/postgresql.nix#L342-L353
+    systemd.services.postgresql.postStart =
+      with config.services.postgresql;
+      pkgs.lib.mkBefore ''
+        PSQL="psql --port=${toString port}"
+        while ! $PSQL -d postgres -c "" 2> /dev/null; do
+            if ! kill -0 "$MAINPID"; then exit 1; fi
+            sleep 0.1
+        done
+        if test -e "${dataDir}/.first_startup"; then
+          createdb example
+          pgbench example -i -s 50 --foreign-keys
+        fi
+      '';
 
     networking.firewall.allowedTCPPorts = [ 5432 ];
   };

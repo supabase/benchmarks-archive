@@ -36,6 +36,14 @@ let
 
         nixops ssh -d pgrbench client k6 run --summary-export=$filename.json - < $1
       '';
+  clientPgBench =
+    pkgs.writeShellScriptBin "pgrbench-pgbench"
+      ''
+        set -euo pipefail
+
+        # uses the full cores of the instance and prepared statements
+        nixops ssh -d pgrbench client pgbench example -h pg -U postgres -j 8 -T 30 -M prepared $*
+      '';
   ssh =
     pkgs.writeShellScriptBin "pgrbench-ssh"
       ''
@@ -63,6 +71,7 @@ pkgs.mkShell {
     k6
     ssh
     destroy
+    clientPgBench
   ];
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs}:."
@@ -71,5 +80,16 @@ pkgs.mkShell {
     export PGRBENCH_WITH_NGINX="true"
     export PGRBENCH_WITH_UNIX_SOCKET="true"
     export PGRBENCH_SEPARATE_PG="true"
+
+    export PGRBENCH_PG_INSTANCE_TYPE="t3a.nano"
+    export PGRBENCH_PGRST_INSTANCE_TYPE="t3a.nano"
+
+    repeat() {
+        number=$1
+        shift
+        for i in `seq $number`; do
+          $@
+        done
+    }
   '';
 }
