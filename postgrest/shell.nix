@@ -32,9 +32,9 @@ let
     pkgs.writeShellScriptBin "pgrbench-k6"
       ''
         set -euo pipefail
-        filename=$(basename $1 .js)
+        filename=$(basename $2 .js)
 
-        nixops ssh -d pgrbench client k6 run --summary-export=$filename.json - < $1
+        nixops ssh -d pgrbench client k6 run --vus $1 --summary-export=$filename.json - < $2
       '';
   clientPgBench =
     pkgs.writeShellScriptBin "pgrbench-pgbench"
@@ -112,5 +112,6 @@ pkgs.mkShell {
 
     export PGRBENCH_PG_INSTANCE_TYPE="t3a.nano"
     export PGRBENCH_PGRST_INSTANCE_TYPE="t3a.nano"
+    export PGRBENCH_PGRST_POOL="100"
   '';
 }

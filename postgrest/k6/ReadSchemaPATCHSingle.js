@@ -7,7 +7,6 @@ import { Rate } from 'k6/metrics'
 const URL = "http://pgrst";
 
 export const options = {
-  vus: 10,
   duration: '30s',
   thresholds: {
     'failed requests': ['rate<0.1'],

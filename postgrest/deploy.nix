@@ -120,6 +120,7 @@ in {
               db-anon-role = "postgres"
               db-use-legacy-gucs = false
               db-pool = ${if builtins.stringLength env.pgrstPool == 0 then "20" else env.pgrstPool}
+              db-pool-timeout = 60
 
               ${
                 if env.withNginx && env.withUnixSocket
