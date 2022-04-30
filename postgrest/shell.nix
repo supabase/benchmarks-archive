@@ -44,6 +44,33 @@ let
         # uses the full cores of the instance and prepared statements
         nixops ssh -d pgrbench client pgbench example -h pg -U postgres -j 8 -T 30 -M prepared $*
       '';
+  repeat =
+    pkgs.writeShellScriptBin "repeat"
+      ''
+        set -euo pipefail
+
+        number=$1
+        shift
+
+        for i in `seq $number`; do
+          echo -e "\nRun $i:\n"
+          $@
+        done
+      '';
+  pgBenchAllPgInstances =
+    pkgs.writeShellScriptBin "pgrbench-all-pg-instances"
+      ''
+        set -euo pipefail
+
+        for instance in 'm5a.large' 'm5a.xlarge' 'm5a.2xlarge' 'm5a.4xlarge' 'm5a.8xlarge'; do
+          export PGRBENCH_PG_INSTANCE_TYPE="$instance"
+
+          pgrbench-deploy
+
+          echo -e "\nRunning on a $PGRBENCH_PG_INSTANCE_TYPE\n"
+          $@
+        done
+      '';
   ssh =
     pkgs.writeShellScriptBin "pgrbench-ssh"
       ''
@@ -72,6 +99,8 @@ pkgs.mkShell {
     ssh
     destroy
     clientPgBench
+    repeat
+    pgBenchAllPgInstances
   ];
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs}:."
@@ -83,13 +112,5 @@ pkgs.mkShell {
 
     export PGRBENCH_PG_INSTANCE_TYPE="t3a.nano"
     export PGRBENCH_PGRST_INSTANCE_TYPE="t3a.nano"
-
-    repeat() {
-        number=$1
-        shift
-        for i in `seq $number`; do
-          $@
-        done
-    }
   '';
 }
