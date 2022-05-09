@@ -54,8 +54,8 @@ pgrbench-destroy
 Run the k6 script:
 
 ```
-## k6 will run on the AWS client instance and load test the t3anano instance with the local k6/GETSingle.js script
-pgrbench-k6 t3anano k6/GETSingle.js
+## k6 will run with 10 VUs on the AWS client instance and load test the t3anano instance with the local k6/GETSingle.js script
+pgrbench-k6 10 k6/GETSingle.js
 
 ## You will see the k6 logo and runs here
 ```
@@ -107,17 +107,10 @@ pgrbench-deploy
 
 Don't try with ARM-based instances, these don't work currently for NixOps.
 
-## Scenarios to test
+## Pending scenarios to test
 
-- [x]read heavy workload(with resource embedding)
-- [x]write heavy workload
-- [x]pg + pgrest on the same ec2 instance(unix socket and tcp).
-- [x]pg + pgrest + nginx on the same ec2 instance
-- [x]pg and pgrest(w/o nginx) on separate ec2 instance
-- [x]separate pg with different type of ec2 instances and tuned with https://pgtune.leopard.in.ua/#/
 - [ ]pgrest with `pre-request`
 - [ ]insertions with [specifying-columns](http://postgrest.org/en/v7.0.0/api.html#specifying-columns)
-- [ ]a slow rpc with `pg_sleep`
 
 ## Other benchmarks
 
