@@ -32,7 +32,7 @@ let
     pkgs.writeShellScriptBin "pgrbench-k6"
       ''
         set -euo pipefail
-        filename=$(basename $2 .js)
+        filename=$(basename $2.js)
 
         nixops ssh -d pgrbench client k6 run --vus $1 --summary-export=$filename.json - < $2
       '';
@@ -42,7 +42,17 @@ let
         set -euo pipefail
 
         # uses the full cores of the instance and prepared statements
-        nixops ssh -d pgrbench client pgbench example -h pg -U postgres -j 8 -T 30 -M prepared $*
+        nixops ssh -d pgrbench client pgbench example -h pg -U postgres -j 16 -T 30 -M prepared $*
+      '';
+  clientPgBenchVaried =
+    pkgs.writeShellScriptBin "pgrbench-pgbench-varied-clients"
+      ''
+        set -euo pipefail
+
+        for i in '10' '50' '100'; do
+          echo -e "\n"
+          pgrbench-pgbench -c $i $*
+        done
       '';
   repeat =
     pkgs.writeShellScriptBin "repeat"
@@ -53,7 +63,7 @@ let
         shift
 
         for i in `seq $number`; do
-          echo -e "\nRun $i:\n"
+          echo -e "\nRun: $i"
           $@
         done
       '';
@@ -67,7 +77,7 @@ let
 
           pgrbench-deploy
 
-          echo -e "\nRunning on a $PGRBENCH_PG_INSTANCE_TYPE\n"
+          echo -e "\nInstance: $PGRBENCH_PG_INSTANCE_TYPE\n"
           $@
         done
       '';
@@ -99,6 +109,7 @@ pkgs.mkShell {
     ssh
     destroy
     clientPgBench
+    clientPgBenchVaried
     repeat
     pgBenchAllPgInstances
   ];

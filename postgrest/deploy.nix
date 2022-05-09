@@ -120,7 +120,7 @@ in {
               db-anon-role = "postgres"
               db-use-legacy-gucs = false
               db-pool = ${if builtins.stringLength env.pgrstPool == 0 then "20" else env.pgrstPool}
-              db-pool-timeout = 60
+              db-pool-timeout = 3600
 
               ${
                 if env.withNginx && env.withUnixSocket
@@ -195,7 +195,7 @@ in {
       targetEnv = "ec2";
       ec2 = {
         inherit region accessKeyId;
-        instanceType             = "t3a.2xlarge";
+        instanceType             = "m5a.4xlarge";
         associatePublicIpAddress = true;
         keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
         subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
