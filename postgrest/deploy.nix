@@ -210,8 +210,9 @@ in {
       { domain = "root"; type = "soft"; item = "nofile"; value = "5000"; }
     ];
     networking.hosts = {
-      "${nodes.pgrstServer.config.networking.privateIPv4}"   = [ "pgrst" ];
-      "${nodes.pg.config.networking.privateIPv4}"            = [ "pg" ];
+      "${nodes.pgrstServer.config.networking.privateIPv4}" = [ "pgrst" ];
+    } // pkgs.lib.optionalAttrs env.withSeparatePg {
+      "${nodes.pg.config.networking.privateIPv4}" = [ "pg" ];
     };
   };
 }
