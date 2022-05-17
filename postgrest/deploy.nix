@@ -1,4 +1,5 @@
 let
+  pkgs = import <nixpkgs> {};
   region = "us-east-2";
   accessKeyId = "default"; ## aws profile
   env = {
@@ -9,8 +10,15 @@ let
     pgInstanceType    = builtins.getEnv "PGRBENCH_PG_INSTANCE_TYPE";
     pgrstInstanceType = builtins.getEnv "PGRBENCH_PGRST_INSTANCE_TYPE";
     pgrstPool         = builtins.getEnv "PGRBENCH_PGRST_POOL";
+
+    withPgLogging     =
+      pkgs.lib.optionalAttrs (builtins.getEnv "PGRBENCH_PG_LOGGING" == "true") {
+        logging_collector = "on";
+        log_directory = "pg_log";
+        log_filename = "postgresql-%Y-%m-%d.log";
+        log_statement = "all";
+      };
   };
-  pkgs = import <nixpkgs> {};
   postgresConfigs = import ../postgresql/postgres.nix;
 in {
   network.description = "postgrest benchmark";
@@ -68,7 +76,7 @@ in {
     };
   };
 
-  pgrstServer = {nodes, resources, ...}: let pgrst = pkgs.callPackage ./pgrst.nix {}; in
+  pgrstServer = {nodes, config, resources, ...}: let pgrst = pkgs.callPackage ./pgrst.nix {}; in
   {
     deployment = {
       targetEnv = "ec2";
@@ -99,6 +107,7 @@ in {
         host    all all 127.0.0.1/32 trust
         host    all all ::1/128 trust
       '';
+      settings = builtins.getAttr config.deployment.ec2.instanceType postgresConfigs // env.withPgLogging;
       initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
     };
 
@@ -247,7 +256,7 @@ in {
       '';
       enableTCPIP = true; # listen_adresses = *
       # Tuned according to https://pgtune.leopard.in.ua
-      settings = builtins.getAttr config.deployment.ec2.instanceType postgresConfigs;
+      settings = builtins.getAttr config.deployment.ec2.instanceType postgresConfigs // env.withPgLogging;
       initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
     };
     # initialize the pgbench db by prepending to the default postgresql systemd post start
