@@ -124,5 +124,7 @@ pkgs.mkShell {
     export PGRBENCH_PG_INSTANCE_TYPE="t3a.nano"
     export PGRBENCH_PGRST_INSTANCE_TYPE="t3a.nano"
     export PGRBENCH_PGRST_POOL="100"
+
+    export PGRBENCH_PG_LOGGING="false"
   '';
 }
