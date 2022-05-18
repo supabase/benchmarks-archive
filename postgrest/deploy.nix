@@ -106,7 +106,10 @@ in {
         local   all all trust
         host    all all 127.0.0.1/32 trust
         host    all all ::1/128 trust
+        host    all all ${resources.vpcSubnets.pgrstBenchSubnet.cidrBlock} trust
       '';
+      enableTCPIP = true; # listen_adresses = *
+      # Tuned according to https://pgtune.leopard.in.ua
       settings = builtins.getAttr config.deployment.ec2.instanceType postgresConfigs // env.withPgLogging;
       initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
     };
@@ -189,7 +192,7 @@ in {
       '';
     };
 
-    networking.firewall.allowedTCPPorts = [ 80 ];
+    networking.firewall.allowedTCPPorts = [ 80 5432 ];
     networking.hosts = pkgs.lib.optionalAttrs env.withSeparatePg {
       "${nodes.pg.config.networking.privateIPv4}" = [ "pg" ];
     };
@@ -259,21 +262,6 @@ in {
       settings = builtins.getAttr config.deployment.ec2.instanceType postgresConfigs // env.withPgLogging;
       initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
     };
-    # initialize the pgbench db by prepending to the default postgresql systemd post start
-    # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/databases/postgresql.nix#L342-L353
-    systemd.services.postgresql.postStart =
-      with config.services.postgresql;
-      pkgs.lib.mkBefore ''
-        PSQL="psql --port=${toString port}"
-        while ! $PSQL -d postgres -c "" 2> /dev/null; do
-            if ! kill -0 "$MAINPID"; then exit 1; fi
-            sleep 0.1
-        done
-        if test -e "${dataDir}/.first_startup"; then
-          createdb example
-          pgbench example -i -s 50 --foreign-keys
-        fi
-      '';
 
     networking.firewall.allowedTCPPorts = [ 5432 ];
   };

@@ -32,17 +32,27 @@ let
     pkgs.writeShellScriptBin "pgrbench-k6"
       ''
         set -euo pipefail
-        filename=$(basename $2.js)
 
-        nixops ssh -d pgrbench client k6 run --vus $1 --summary-export=$filename.json - < $2
+        nixops ssh -d pgrbench client k6 run -q --vus $1 - < $2
+      '';
+  k6VariedVus =
+    pkgs.writeShellScriptBin "pgrbench-k6-varied-vus"
+      ''
+        set -euo pipefail
+
+        for i in '10' '50' '100'; do
+          echo -e "\n"
+          pgrbench-k6 $i $1
+        done
       '';
   clientPgBench =
     pkgs.writeShellScriptBin "pgrbench-pgbench"
       ''
         set -euo pipefail
 
+        host=$([ "$PGRBENCH_SEPARATE_PG" = "true" ] && echo "pg" || echo "pgrst")
         # uses the full cores of the instance and prepared statements
-        nixops ssh -d pgrbench client pgbench example -h pg -U postgres -j 16 -T 30 -M prepared $*
+        nixops ssh -d pgrbench client pgbench postgres -h $host -U postgres -j 16 -T 30 -c $1 --no-vacuum -f - < $2
       '';
   clientPgBenchVaried =
     pkgs.writeShellScriptBin "pgrbench-pgbench-varied-clients"
@@ -51,7 +61,7 @@ let
 
         for i in '10' '50' '100'; do
           echo -e "\n"
-          pgrbench-pgbench -c $i $*
+          pgrbench-pgbench $i $1
         done
       '';
   repeat =
@@ -81,6 +91,24 @@ let
           $@
         done
       '';
+  pgBenchAllPgPgrestInstances =
+    pkgs.writeShellScriptBin "pgrbench-all-pg-pgrest-instances"
+      ''
+        set -euo pipefail
+
+        for instance in 'm5a.large' 'm5a.xlarge' 'm5a.2xlarge' 'm5a.4xlarge' 'm5a.8xlarge'; do
+          export PGRBENCH_PG_INSTANCE_TYPE="$instance"
+          export PGRBENCH_PGRST_INSTANCE_TYPE="$instance"
+
+          pgrbench-deploy
+
+          sleep 2s # TODO: sleep until pgrest establishes a connection to pg, this should be handled in a k6 setup
+
+          echo -e "\nPostgreSQL instance: $PGRBENCH_PG_INSTANCE_TYPE\n"
+          echo -e "\nPostgREST instance: $PGRBENCH_PGRST_INSTANCE_TYPE\n"
+          $@
+        done
+      '';
   ssh =
     pkgs.writeShellScriptBin "pgrbench-ssh"
       ''
@@ -106,12 +134,14 @@ pkgs.mkShell {
     deploy
     info
     k6
+    k6VariedVus
     ssh
     destroy
     clientPgBench
     clientPgBenchVaried
     repeat
     pgBenchAllPgInstances
+    pgBenchAllPgPgrestInstances
   ];
   shellHook = ''
     export NIX_PATH="nixpkgs=${nixpkgs}:."
