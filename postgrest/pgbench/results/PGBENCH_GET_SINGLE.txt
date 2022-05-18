@@ -1,0 +1,196 @@
+pgrbench-all-pg-instances pgrbench-pgbench-varied-clients pgbench/GETSingle.sql > pgbench/results/PGBENCH_GET_SINGLE.txt
+
+Instance: m5a.large
+
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 10
+number of threads: 10
+duration: 30 s
+number of transactions actually processed: 104918
+latency average = 2.860 ms
+tps = 3496.560521 (including connections establishing)
+tps = 3498.134739 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 50
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 93184
+latency average = 16.111 ms
+tps = 3103.562309 (including connections establishing)
+tps = 3106.256246 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 100
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 88749
+latency average = 33.868 ms
+tps = 2952.673829 (including connections establishing)
+tps = 2956.883027 (excluding connections establishing)
+
+Instance: m5a.xlarge
+
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 10
+number of threads: 10
+duration: 30 s
+number of transactions actually processed: 171082
+latency average = 1.754 ms
+tps = 5702.188330 (including connections establishing)
+tps = 5703.132505 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 50
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 183207
+latency average = 8.192 ms
+tps = 6103.728490 (including connections establishing)
+tps = 6107.745240 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 100
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 175657
+latency average = 17.096 ms
+tps = 5849.281552 (including connections establishing)
+tps = 5854.267359 (excluding connections establishing)
+
+Instance: m5a.2xlarge
+
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 10
+number of threads: 10
+duration: 30 s
+number of transactions actually processed: 227510
+latency average = 1.319 ms
+tps = 7583.117516 (including connections establishing)
+tps = 7583.998615 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 50
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 377203
+latency average = 3.978 ms
+tps = 12570.291017 (including connections establishing)
+tps = 12574.586781 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 100
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 357791
+latency average = 8.390 ms
+tps = 11919.584260 (including connections establishing)
+tps = 11927.167103 (excluding connections establishing)
+
+Instance: m5a.4xlarge
+
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 10
+number of threads: 10
+duration: 30 s
+number of transactions actually processed: 248542
+latency average = 1.207 ms
+tps = 8284.415052 (including connections establishing)
+tps = 8285.348794 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 50
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 702240
+latency average = 2.136 ms
+tps = 23403.199869 (including connections establishing)
+tps = 23406.786426 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 100
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 734564
+latency average = 4.086 ms
+tps = 24475.955460 (including connections establishing)
+tps = 24481.162474 (excluding connections establishing)
+
+Instance: m5a.8xlarge
+
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 10
+number of threads: 10
+duration: 30 s
+number of transactions actually processed: 250438
+latency average = 1.198 ms
+tps = 8347.565534 (including connections establishing)
+tps = 8348.541271 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 50
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 898815
+latency average = 1.669 ms
+tps = 29955.406050 (including connections establishing)
+tps = 29960.018157 (excluding connections establishing)
+
+
+transaction type: -
+scaling factor: 1
+query mode: simple
+number of clients: 100
+number of threads: 16
+duration: 30 s
+number of transactions actually processed: 1192513
+latency average = 2.517 ms
+tps = 39735.395971 (including connections establishing)
+tps = 39743.368167 (excluding connections establishing)
