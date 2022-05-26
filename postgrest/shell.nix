@@ -96,16 +96,22 @@ let
       ''
         set -euo pipefail
 
-        for instance in 'm5a.large' 'm5a.xlarge' 'm5a.2xlarge' 'm5a.4xlarge' 'm5a.8xlarge'; do
+        counter=0
+
+        for instance in 'm5a.large' 'm5a.xlarge' 'm5a.2xlarge' 'm5a.4xlarge' 'm5a.8xlarge' 'm5a.12xlarge' 'm5a.16xlarge'; do
           export PGRBENCH_PG_INSTANCE_TYPE="$instance"
           export PGRBENCH_PGRST_INSTANCE_TYPE="$instance"
+          export PGRBENCH_PGRST_POOL=$((100 + counter*50))
+
+          counter=$((counter + 1))
 
           pgrbench-deploy
 
           sleep 2s # TODO: sleep until pgrest establishes a connection to pg, this should be handled in a k6 setup
 
           echo -e "\nPostgreSQL instance: $PGRBENCH_PG_INSTANCE_TYPE\n"
-          echo -e "\nPostgREST instance: $PGRBENCH_PGRST_INSTANCE_TYPE\n"
+          echo -e "PostgREST instance: $PGRBENCH_PGRST_INSTANCE_TYPE\n"
+          echo -e "PostgREST Pool: $PGRBENCH_PGRST_POOL\n"
           $@
         done
       '';
