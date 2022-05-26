@@ -3,8 +3,8 @@
 stdenv.mkDerivation {
   name = "postgrest";
   src = fetchurl {
-      url = "https://github.com/PostgREST/postgrest/releases/download/v9.0.0/postgrest-v9.0.0-linux-static-x64.tar.xz";
-      sha256 = "0gngjj7bc93v9dzyxxlmqiza2p3dm8w5vp6wf26vlmwm2zm22j7a";
+      url = "https://github.com/PostgREST/postgrest/releases/download/v9.0.0.20220531/postgrest-v9.0.0.20220531-linux-static-x64.tar.xz";
+      sha256 = "sha256-7Lmm4+SqoQ743qh+rUn5wM+1lqZ8R6DAhg654Lmb/nc=";
     };
   phases = ["installPhase" "patchPhase"];
   installPhase = ''
