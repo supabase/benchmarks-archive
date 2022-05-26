@@ -97,6 +97,7 @@ in {
 
     environment.systemPackages = [
       pgrst
+      pkgs.htop
     ];
 
     services.postgresql = pkgs.lib.mkIf (!env.withSeparatePg) {
@@ -207,7 +208,7 @@ in {
       targetEnv = "ec2";
       ec2 = {
         inherit region accessKeyId;
-        instanceType             = "m5a.4xlarge";
+        instanceType             = "m5a.16xlarge";
         associatePublicIpAddress = true;
         keyPair                  = resources.ec2KeyPairs.pgrstBenchKeyPair;
         subnetId                 = resources.vpcSubnets.pgrstBenchSubnet;
@@ -218,8 +219,8 @@ in {
     # Tuning from https://k6.io/docs/misc/fine-tuning-os
     boot.kernel.sysctl."net.ipv4.tcp_tw_reuse" = 1;
     security.pam.loginLimits = [ ## ulimit -n
-      { domain = "root"; type = "hard"; item = "nofile"; value = "5000"; }
-      { domain = "root"; type = "soft"; item = "nofile"; value = "5000"; }
+      { domain = "root"; type = "hard"; item = "nofile"; value = "10000"; }
+      { domain = "root"; type = "soft"; item = "nofile"; value = "10000"; }
     ];
     networking.hosts = {
       "${nodes.pgrstServer.config.networking.privateIPv4}" = [ "pgrst" ];
