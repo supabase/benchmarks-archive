@@ -6,6 +6,7 @@ let
     withNginx         = builtins.getEnv "PGRBENCH_WITH_NGINX" == "true";
     withUnixSocket    = builtins.getEnv "PGRBENCH_WITH_UNIX_SOCKET" == "true";
     withSeparatePg    = builtins.getEnv "PGRBENCH_SEPARATE_PG" == "true";
+    withNgnixLBS      = builtins.getEnv "PGRBENCH_PGRST_NGNIX_LBS" == "true";
 
     pgInstanceType    = builtins.getEnv "PGRBENCH_PG_INSTANCE_TYPE";
     pgrstInstanceType = builtins.getEnv "PGRBENCH_PGRST_INSTANCE_TYPE";
@@ -157,6 +158,48 @@ in {
         Restart = "always";
       };
     };
+    systemd.services.postgrst = {
+      enable      = if env.withNgnixLBS then true else false;
+      description = "postgrst daemon";
+      after       = [ "postgresql.service" ];
+      wantedBy    = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStart =
+          let
+            pgHost =
+              if env.withSeparatePg then "pg"
+              else if env.withUnixSocket then ""
+              else "localhost";
+            pgrstConf = pkgs.writeText "pgrst2.conf" ''
+              db-uri = "postgres://postgres@${pgHost}/postgres"
+              db-schema = "public"
+              db-anon-role = "postgres"
+              db-use-legacy-gucs = false
+              db-pool = ${if builtins.stringLength env.pgrstPool == 0 then "20" else env.pgrstPool}
+              db-pool-timeout = 60
+
+              ${
+                if env.withNginx && env.withUnixSocket
+                then ''
+                  server-unix-socket = "/tmp/pgrst_1.sock"
+                  server-unix-socket-mode = "777"
+                ''
+                else if env.withNginx
+                then ''
+                  server-port = "3000"
+                ''
+                else ''
+                  server-port = "80"
+                ''
+              }
+
+              jwt-secret = "reallyreallyreallyreallyverysafe"
+            '';
+          in
+	  "${pgrst}/bin/postgrest ${pgrstConf}";
+        Restart = "always";
+      };
+    };
 
     services.nginx = {
       enable = env.withNginx;
@@ -166,13 +209,20 @@ in {
         http {
           upstream postgrest {
             ${
-              if env.withUnixSocket
+              if env.withUnixSocket && env.withNgnixLBS
               then ''
+                server unix:/tmp/pgrst.sock;
+                server unix:/tmp/pgrst_1.sock;
+              ''
+              else if env.withUnixSocket
+              then
+              ''
                 server unix:/tmp/pgrst.sock;
               ''
               else ''
                 server localhost:3000;
               ''
+
             }
             keepalive 64;
             keepalive_timeout 120s;
