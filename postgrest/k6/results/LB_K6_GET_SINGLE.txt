@@ -1,0 +1,911 @@
+pgrbench-all-pg-pgrest-instances pgrbench-k6-varied-vus k6/GETSingle.js > k6/results/LB_K6_GET_SINGLE.txt
+
+PostgreSQL instance: m5a.large
+
+PostgREST instance: m5a.large
+
+PostgREST Pool: 100
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 10 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 10 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 27 MB  900 kB/s
+    data_sent..................: 8.8 MB 294 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 86194
+    http_req_blocked...........: avg=5.27µs  min=1.01µs  med=1.77µs  max=1.71ms   p(90)=2.3µs   p(95)=3.33µs
+    http_req_connecting........: avg=2.65µs  min=0s      med=0s      max=823.98µs p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=3.4ms   min=1.32ms  med=2.95ms  max=54.4ms   p(90)=5.41ms  p(95)=6.51ms
+    http_req_receiving.........: avg=42.84µs min=14.25µs med=39.69µs max=3.44ms   p(90)=50.46µs p(95)=58.63µs
+    http_req_sending...........: avg=12.06µs min=6.17µs  med=10.37µs max=1.97ms   p(90)=13µs    p(95)=17.28µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=3.34ms  min=1.26ms  med=2.89ms  max=54.27ms  p(90)=5.35ms  p(95)=6.45ms
+    http_reqs..................: 86194  2867.963889/s
+    iteration_duration.........: avg=3.47ms  min=1.38ms  med=3.02ms  max=55.9ms   p(90)=5.48ms  p(95)=6.58ms
+    iterations.................: 86194  2867.963889/s
+    vus........................: 10     min=10 max=10
+    vus_max....................: 10     min=10 max=10
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 50 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 50 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 27 MB  899 kB/s
+    data_sent..................: 8.8 MB 294 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 86088
+    http_req_blocked...........: avg=5.26µs  min=1µs     med=1.74µs  max=980.12µs p(90)=2.32µs  p(95)=3.26µs
+    http_req_connecting........: avg=2.64µs  min=0s      med=0s      max=519.3µs  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=17.34ms min=1.33ms  med=14.46ms max=239.01ms p(90)=33.84ms p(95)=41.24ms
+    http_req_receiving.........: avg=42.07µs min=14.37µs med=39.42µs max=7.36ms   p(90)=50.13µs p(95)=57.67µs
+    http_req_sending...........: avg=11.76µs min=6.2µs   med=9.99µs  max=2.41ms   p(90)=12.71µs p(95)=16.9µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=17.29ms min=1.29ms  med=14.4ms  max=238.96ms p(90)=33.77ms p(95)=41.18ms
+    http_reqs..................: 86088  2863.777857/s
+    iteration_duration.........: avg=17.42ms min=1.39ms  med=14.54ms max=239.06ms p(90)=33.91ms p(95)=41.32ms
+    iterations.................: 86088  2863.777857/s
+    vus........................: 50     min=50 max=50
+    vus_max....................: 50     min=50 max=50
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 100 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 100 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 26 MB  880 kB/s
+    data_sent..................: 8.7 MB 288 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0     ✗ 84320
+    http_req_blocked...........: avg=8.5µs   min=1.04µs  med=1.73µs  max=7.36ms p(90)=2.33µs  p(95)=3.36µs
+    http_req_connecting........: avg=5.68µs  min=0s      med=0s      max=6.71ms p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=35.51ms min=1.36ms  med=26.53ms max=1.23s  p(90)=67.92ms p(95)=83.43ms
+    http_req_receiving.........: avg=42.44µs min=15.48µs med=40.42µs max=7.22ms p(90)=51.82µs p(95)=59.61µs
+    http_req_sending...........: avg=12.31µs min=6.4µs   med=10.3µs  max=2.78ms p(90)=13.14µs p(95)=22.31µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s     p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=35.45ms min=1.31ms  med=26.47ms max=1.23s  p(90)=67.87ms p(95)=83.38ms
+    http_reqs..................: 84320  2802.629325/s
+    iteration_duration.........: avg=35.59ms min=1.42ms  med=26.62ms max=1.23s  p(90)=68ms    p(95)=83.52ms
+    iterations.................: 84320  2802.629325/s
+    vus........................: 100    min=100 max=100
+    vus_max....................: 100    min=100 max=100
+
+
+PostgreSQL instance: m5a.xlarge
+
+PostgREST instance: m5a.xlarge
+
+PostgREST Pool: 150
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 10 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 10 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 43 MB  1.4 MB/s
+    data_sent..................: 14 MB  464 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 135771
+    http_req_blocked...........: avg=4.88µs  min=990ns   med=1.79µs  max=1.75ms  p(90)=2.44µs  p(95)=3.43µs
+    http_req_connecting........: avg=2.27µs  min=0s      med=0s      max=1.65ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=2.13ms  min=1.13ms  med=2.04ms  max=26.68ms p(90)=2.69ms  p(95)=2.95ms
+    http_req_receiving.........: avg=40.84µs min=12.64µs med=37.09µs max=4.53ms  p(90)=49.39µs p(95)=57.35µs
+    http_req_sending...........: avg=12.05µs min=6.24µs  med=10.22µs max=2.07ms  p(90)=13.29µs p(95)=21.62µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s      p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=2.07ms  min=1.07ms  med=1.99ms  max=26.58ms p(90)=2.63ms  p(95)=2.89ms
+    http_reqs..................: 135771 4516.905559/s
+    iteration_duration.........: avg=2.2ms   min=1.19ms  med=2.11ms  max=28.06ms p(90)=2.76ms  p(95)=3.03ms
+    iterations.................: 135771 4516.905559/s
+    vus........................: 10     min=10 max=10
+    vus_max....................: 10     min=10 max=10
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 50 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 50 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 52 MB  1.7 MB/s
+    data_sent..................: 17 MB  562 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 164689
+    http_req_blocked...........: avg=4.89µs  min=990ns   med=1.77µs  max=1.77ms   p(90)=2.47µs  p(95)=3.63µs
+    http_req_connecting........: avg=2.24µs  min=0s      med=0s      max=1.68ms   p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=9.02ms  min=1.29ms  med=7.62ms  max=104.68ms p(90)=16.38ms p(95)=19.9ms
+    http_req_receiving.........: avg=40.5µs  min=13.29µs med=35.86µs max=6.96ms   p(90)=50.05µs p(95)=58.59µs
+    http_req_sending...........: avg=12.51µs min=6.22µs  med=10.49µs max=2.39ms   p(90)=13.65µs p(95)=24.91µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=8.97ms  min=1.25ms  med=7.57ms  max=104.59ms p(90)=16.33ms p(95)=19.84ms
+    http_reqs..................: 164689 5479.556191/s
+    iteration_duration.........: avg=9.1ms   min=1.35ms  med=7.7ms   max=105.46ms p(90)=16.47ms p(95)=19.97ms
+    iterations.................: 164689 5479.556191/s
+    vus........................: 50     min=50 max=50
+    vus_max....................: 50     min=50 max=50
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 100 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 100 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 51 MB  1.7 MB/s
+    data_sent..................: 17 MB  556 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0     ✗ 162837
+    http_req_blocked...........: avg=7.8µs   min=980ns   med=1.77µs  max=11.76ms  p(90)=2.45µs  p(95)=3.57µs
+    http_req_connecting........: avg=4.9µs   min=0s      med=0s      max=11.13ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=18.34ms min=1.21ms  med=14.57ms max=569.17ms p(90)=32.23ms p(95)=41.04ms
+    http_req_receiving.........: avg=39.6µs  min=14.49µs med=35.76µs max=7.53ms   p(90)=50.15µs p(95)=58.66µs
+    http_req_sending...........: avg=12.24µs min=6.32µs  med=10.22µs max=1.62ms   p(90)=13.46µs p(95)=24.82µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=18.28ms min=1.16ms  med=14.52ms max=569.12ms p(90)=32.18ms p(95)=41ms
+    http_reqs..................: 162837 5415.623077/s
+    iteration_duration.........: avg=18.42ms min=1.28ms  med=14.65ms max=569.25ms p(90)=32.32ms p(95)=41.13ms
+    iterations.................: 162837 5415.623077/s
+    vus........................: 100    min=100 max=100
+    vus_max....................: 100    min=100 max=100
+
+
+PostgreSQL instance: m5a.2xlarge
+
+PostgREST instance: m5a.2xlarge
+
+PostgREST Pool: 200
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 10 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 10 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 52 MB  1.7 MB/s
+    data_sent..................: 17 MB  564 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 165255
+    http_req_blocked...........: avg=4.98µs  min=1µs     med=1.84µs  max=2.08ms   p(90)=2.54µs  p(95)=3.66µs
+    http_req_connecting........: avg=2.25µs  min=0s      med=0s      max=838.34µs p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=1.73ms  min=1.1ms   med=1.69ms  max=27.7ms   p(90)=2ms     p(95)=2.14ms
+    http_req_receiving.........: avg=41.05µs min=14.13µs med=35.74µs max=5.25ms   p(90)=50.22µs p(95)=58.61µs
+    http_req_sending...........: avg=12.5µs  min=6.18µs  med=10.54µs max=3.05ms   p(90)=13.88µs p(95)=24.55µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=1.68ms  min=1.05ms  med=1.64ms  max=27.67ms  p(90)=1.95ms  p(95)=2.08ms
+    http_reqs..................: 165255 5497.851812/s
+    iteration_duration.........: avg=1.81ms  min=1.17ms  med=1.76ms  max=27.77ms  p(90)=2.09ms  p(95)=2.23ms
+    iterations.................: 165255 5497.851812/s
+    vus........................: 10     min=10 max=10
+    vus_max....................: 10     min=10 max=10
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 50 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 50 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 97 MB  3.2 MB/s
+    data_sent..................: 32 MB  1.1 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 308026
+    http_req_blocked...........: avg=5.18µs  min=950ns   med=1.78µs  max=11.08ms  p(90)=2.71µs  p(95)=4.16µs
+    http_req_connecting........: avg=2.23µs  min=0s      med=0s      max=2.44ms   p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=4.77ms  min=1.18ms  med=4.46ms  max=332.82ms p(90)=6.88ms  p(95)=8.1ms
+    http_req_receiving.........: avg=41.86µs min=13.36µs med=32.65µs max=11.49ms  p(90)=49.49µs p(95)=59.51µs
+    http_req_sending...........: avg=13.66µs min=6.15µs  med=10.44µs max=10.25ms  p(90)=14.43µs p(95)=27.88µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=4.71ms  min=1.13ms  med=4.41ms  max=332.76ms p(90)=6.82ms  p(95)=8.03ms
+    http_reqs..................: 308026 10249.081019/s
+    iteration_duration.........: avg=4.86ms  min=1.26ms  med=4.55ms  max=332.94ms p(90)=6.97ms  p(95)=8.2ms
+    iterations.................: 308026 10249.081019/s
+    vus........................: 50     min=50 max=50
+    vus_max....................: 50     min=50 max=50
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 100 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 100 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 92 MB  3.1 MB/s
+    data_sent..................: 30 MB  1.0 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0     ✗ 293914
+    http_req_blocked...........: avg=6.68µs  min=950ns  med=1.77µs  max=10.72ms  p(90)=2.71µs  p(95)=4.07µs
+    http_req_connecting........: avg=3.73µs  min=0s     med=0s      max=10.56ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=10.09ms min=1.21ms med=8.37ms  max=157.98ms p(90)=18.17ms p(95)=22.16ms
+    http_req_receiving.........: avg=42.55µs min=12.5µs med=32.85µs max=13.05ms  p(90)=49.85µs p(95)=59.69µs
+    http_req_sending...........: avg=13.7µs  min=6.27µs med=10.4µs  max=11.01ms  p(90)=14.43µs p(95)=27.73µs
+    http_req_tls_handshaking...: avg=0s      min=0s     med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=10.04ms min=1.16ms med=8.31ms  max=157.92ms p(90)=18.12ms p(95)=22.1ms
+    http_reqs..................: 293914 9776.983166/s
+    iteration_duration.........: avg=10.2ms  min=1.29ms med=8.47ms  max=158.06ms p(90)=18.31ms p(95)=22.34ms
+    iterations.................: 293914 9776.983166/s
+    vus........................: 100    min=100 max=100
+    vus_max....................: 100    min=100 max=100
+
+
+PostgreSQL instance: m5a.4xlarge
+
+PostgREST instance: m5a.4xlarge
+
+PostgREST Pool: 250
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 10 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 10 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 50 MB  1.7 MB/s
+    data_sent..................: 16 MB  541 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 158419
+    http_req_blocked...........: avg=5.01µs  min=980ns   med=1.83µs  max=3.01ms  p(90)=2.54µs  p(95)=3.63µs
+    http_req_connecting........: avg=2.29µs  min=0s      med=0s      max=1.22ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=1.81ms  min=1.26ms  med=1.77ms  max=27.12ms p(90)=2.04ms  p(95)=2.16ms
+    http_req_receiving.........: avg=41.47µs min=13.57µs med=36.43µs max=4.93ms  p(90)=50.44µs p(95)=58.75µs
+    http_req_sending...........: avg=12.68µs min=6.15µs  med=10.67µs max=1.47ms  p(90)=14.13µs p(95)=25.1µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s      p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=1.75ms  min=1.21ms  med=1.72ms  max=27.06ms p(90)=1.98ms  p(95)=2.1ms
+    http_reqs..................: 158419 5270.162007/s
+    iteration_duration.........: avg=1.88ms  min=1.33ms  med=1.84ms  max=27.19ms p(90)=2.13ms  p(95)=2.25ms
+    iterations.................: 158419 5270.162007/s
+    vus........................: 10     min=10 max=10
+    vus_max....................: 10     min=10 max=10
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 50 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 50 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 103 MB 3.4 MB/s
+    data_sent..................: 34 MB  1.1 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 326989
+    http_req_blocked...........: avg=5.19µs  min=850ns   med=1.78µs  max=8.15ms  p(90)=2.78µs  p(95)=4.35µs
+    http_req_connecting........: avg=2.23µs  min=0s      med=0s      max=2.05ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=4.48ms  min=1.31ms  med=4.42ms  max=29.31ms p(90)=5.4ms   p(95)=5.76ms
+    http_req_receiving.........: avg=42.43µs min=13.69µs med=33.31µs max=13.97ms p(90)=50.09µs p(95)=60.41µs
+    http_req_sending...........: avg=13.9µs  min=6.32µs  med=10.64µs max=5.64ms  p(90)=14.83µs p(95)=27.97µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s      p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=4.42ms  min=1.27ms  med=4.37ms  max=29.28ms p(90)=5.35ms  p(95)=5.7ms
+    http_reqs..................: 326989 10880.691906/s
+    iteration_duration.........: avg=4.58ms  min=1.37ms  med=4.5ms   max=29.39ms p(90)=5.49ms  p(95)=5.87ms
+    iterations.................: 326989 10880.691906/s
+    vus........................: 50     min=50 max=50
+    vus_max....................: 50     min=50 max=50
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 100 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 100 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 101 MB 3.4 MB/s
+    data_sent..................: 33 MB  1.1 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0     ✗ 322583
+    http_req_blocked...........: avg=6.67µs  min=950ns  med=1.81µs  max=11.73ms  p(90)=2.85µs  p(95)=4.26µs
+    http_req_connecting........: avg=3.65µs  min=0s     med=0s      max=10.95ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=9.19ms  min=1.37ms med=9.13ms  max=105.42ms p(90)=10.98ms p(95)=11.59ms
+    http_req_receiving.........: avg=42.65µs min=13.9µs med=33.83µs max=13.44ms  p(90)=50.74µs p(95)=61.06µs
+    http_req_sending...........: avg=14.15µs min=6.35µs med=10.77µs max=11.19ms  p(90)=15.13µs p(95)=27.82µs
+    http_req_tls_handshaking...: avg=0s      min=0s     med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=9.13ms  min=1.31ms med=9.08ms  max=105.34ms p(90)=10.93ms p(95)=11.52ms
+    http_reqs..................: 322583 10721.148275/s
+    iteration_duration.........: avg=9.29ms  min=1.45ms med=9.22ms  max=116.4ms  p(90)=11.08ms p(95)=11.69ms
+    iterations.................: 322583 10721.148275/s
+    vus........................: 100    min=100 max=100
+    vus_max....................: 100    min=100 max=100
+
+
+PostgreSQL instance: m5a.8xlarge
+
+PostgREST instance: m5a.8xlarge
+
+PostgREST Pool: 300
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 10 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 10 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 50 MB  1.7 MB/s
+    data_sent..................: 16 MB  545 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 159582
+    http_req_blocked...........: avg=5.01µs  min=960ns   med=1.83µs  max=2.67ms   p(90)=2.55µs  p(95)=3.71µs
+    http_req_connecting........: avg=2.3µs   min=0s      med=0s      max=803.46µs p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=1.79ms  min=1.22ms  med=1.74ms  max=29.96ms  p(90)=2.07ms  p(95)=2.25ms
+    http_req_receiving.........: avg=41.94µs min=12.52µs med=36.83µs max=5.4ms    p(90)=51.28µs p(95)=59.94µs
+    http_req_sending...........: avg=12.59µs min=6.23µs  med=10.54µs max=2.38ms   p(90)=14.02µs p(95)=24.23µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=1.74ms  min=1.18ms  med=1.69ms  max=29.92ms  p(90)=2.01ms  p(95)=2.18ms
+    http_reqs..................: 159582 5310.206491/s
+    iteration_duration.........: avg=1.87ms  min=1.29ms  med=1.81ms  max=30.04ms  p(90)=2.16ms  p(95)=2.33ms
+    iterations.................: 159582 5310.206491/s
+    vus........................: 10     min=10 max=10
+    vus_max....................: 10     min=10 max=10
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 50 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 50 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 117 MB 3.9 MB/s
+    data_sent..................: 38 MB  1.3 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 373551
+    http_req_blocked...........: avg=5.18µs  min=980ns   med=1.78µs  max=7.82ms   p(90)=2.82µs  p(95)=4.32µs
+    http_req_connecting........: avg=2.24µs  min=0s      med=0s      max=1.52ms   p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=3.9ms   min=1.4ms   med=3.79ms  max=208.62ms p(90)=5.04ms  p(95)=5.47ms
+    http_req_receiving.........: avg=42.79µs min=13.06µs med=32.56µs max=17.03ms  p(90)=49.66µs p(95)=60.5µs
+    http_req_sending...........: avg=14.05µs min=6.22µs  med=10.47µs max=10.95ms  p(90)=14.65µs p(95)=27.98µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=3.84ms  min=1.26ms  med=3.73ms  max=208.56ms p(90)=4.98ms  p(95)=5.41ms
+    http_reqs..................: 373551 12343.89302/s
+    iteration_duration.........: avg=4ms     min=1.46ms  med=3.87ms  max=208.69ms p(90)=5.13ms  p(95)=5.58ms
+    iterations.................: 373551 12343.89302/s
+    vus........................: 50     min=50 max=50
+    vus_max....................: 50     min=50 max=50
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 100 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 100 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 108 MB 3.6 MB/s
+    data_sent..................: 35 MB  1.2 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0     ✗ 342424
+    http_req_blocked...........: avg=6.57µs  min=930ns   med=1.78µs  max=11.11ms  p(90)=2.83µs  p(95)=4.27µs
+    http_req_connecting........: avg=3.59µs  min=0s      med=0s      max=10.81ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=8.63ms  min=1.35ms  med=8.56ms  max=139.38ms p(90)=10.96ms p(95)=11.97ms
+    http_req_receiving.........: avg=41.69µs min=14.28µs med=33.29µs max=14.57ms  p(90)=50.4µs  p(95)=61.08µs
+    http_req_sending...........: avg=14.33µs min=6.31µs  med=10.68µs max=6.92ms   p(90)=14.97µs p(95)=27.74µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=8.58ms  min=1.3ms   med=8.5ms   max=139.31ms p(90)=10.91ms p(95)=11.91ms
+    http_reqs..................: 342424 11379.583671/s
+    iteration_duration.........: avg=8.75ms  min=1.42ms  med=8.65ms  max=139.75ms p(90)=11.08ms p(95)=12.14ms
+    iterations.................: 342424 11379.583671/s
+    vus........................: 100    min=100 max=100
+    vus_max....................: 100    min=100 max=100
+
+
+PostgreSQL instance: m5a.12xlarge
+
+PostgREST instance: m5a.12xlarge
+
+PostgREST Pool: 350
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 10 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 10 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 54 MB  1.8 MB/s
+    data_sent..................: 18 MB  586 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 171742
+    http_req_blocked...........: avg=5.07µs  min=970ns   med=1.83µs  max=1.43ms   p(90)=2.53µs  p(95)=3.57µs
+    http_req_connecting........: avg=2.38µs  min=0s      med=0s      max=995.39µs p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=1.66ms  min=1.1ms   med=1.58ms  max=37.44ms  p(90)=1.99ms  p(95)=2.16ms
+    http_req_receiving.........: avg=40.21µs min=13.16µs med=35.3µs  max=4.22ms   p(90)=49.08µs p(95)=56.71µs
+    http_req_sending...........: avg=12.44µs min=6.05µs  med=10.52µs max=1.44ms   p(90)=13.87µs p(95)=23.15µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=1.61ms  min=1.05ms  med=1.53ms  max=37.41ms  p(90)=1.93ms  p(95)=2.1ms
+    http_reqs..................: 171742 5715.009202/s
+    iteration_duration.........: avg=1.74ms  min=1.16ms  med=1.66ms  max=37.51ms  p(90)=2.07ms  p(95)=2.25ms
+    iterations.................: 171742 5715.009202/s
+    vus........................: 10     min=10 max=10
+    vus_max....................: 10     min=10 max=10
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 50 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 50 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 134 MB 4.5 MB/s
+    data_sent..................: 44 MB  1.5 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 428619
+    http_req_blocked...........: avg=5.3µs   min=960ns   med=1.79µs  max=11.45ms p(90)=2.89µs  p(95)=4.51µs
+    http_req_connecting........: avg=2.31µs  min=0s      med=0s      max=3.22ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=3.38ms  min=1.24ms  med=3.14ms  max=28.63ms p(90)=4.47ms  p(95)=4.93ms
+    http_req_receiving.........: avg=41.75µs min=12.52µs med=32.36µs max=17.03ms p(90)=48.99µs p(95)=59.71µs
+    http_req_sending...........: avg=14.26µs min=6.26µs  med=10.55µs max=13.15ms p(90)=14.88µs p(95)=27.87µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s      p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=3.32ms  min=1.15ms  med=3.09ms  max=28.53ms p(90)=4.41ms  p(95)=4.86ms
+    http_reqs..................: 428619 14236.436406/s
+    iteration_duration.........: avg=3.49ms  min=1.31ms  med=3.22ms  max=66.7ms  p(90)=4.57ms  p(95)=5.05ms
+    iterations.................: 428619 14236.436406/s
+    vus........................: 50     min=50 max=50
+    vus_max....................: 50     min=50 max=50
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 100 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 100 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 105 MB 3.5 MB/s
+    data_sent..................: 34 MB  1.1 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0     ✗ 334267
+    http_req_blocked...........: avg=6.16µs  min=960ns   med=1.78µs  max=8.06ms   p(90)=2.82µs  p(95)=4.24µs
+    http_req_connecting........: avg=3.2µs   min=0s      med=0s      max=7.35ms   p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=8.85ms  min=1.17ms  med=8.79ms  max=108.21ms p(90)=11.88ms p(95)=14.52ms
+    http_req_receiving.........: avg=42.98µs min=13.99µs med=33.33µs max=12.4ms   p(90)=50.02µs p(95)=60.28µs
+    http_req_sending...........: avg=14.34µs min=5.88µs  med=10.61µs max=13.58ms  p(90)=14.94µs p(95)=27.36µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s       p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=8.79ms  min=1.12ms  med=8.74ms  max=108.13ms p(90)=11.84ms p(95)=14.56ms
+    http_reqs..................: 334267 11121.89528/s
+    iteration_duration.........: avg=8.96ms  min=1.26ms  med=8.88ms  max=108.5ms  p(90)=11.99ms p(95)=14.75ms
+    iterations.................: 334267 11121.89528/s
+    vus........................: 100    min=100 max=100
+    vus_max....................: 100    min=100 max=100
+
+
+PostgreSQL instance: m5a.16xlarge
+
+PostgREST instance: m5a.16xlarge
+
+PostgREST Pool: 400
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 10 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 10 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 57 MB  1.9 MB/s
+    data_sent..................: 19 MB  618 kB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 180851
+    http_req_blocked...........: avg=5.09µs  min=950ns    med=1.84µs  max=2.52ms  p(90)=2.53µs  p(95)=3.6µs
+    http_req_connecting........: avg=2.35µs  min=0s       med=0s      max=1.42ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=1.57ms  min=1.03ms   med=1.51ms  max=27.94ms p(90)=1.81ms  p(95)=2.04ms
+    http_req_receiving.........: avg=40.43µs min=13.04µs  med=35.29µs max=4.76ms  p(90)=49.45µs p(95)=57.38µs
+    http_req_sending...........: avg=12.55µs min=6.28µs   med=10.58µs max=2.33ms  p(90)=13.78µs p(95)=22.18µs
+    http_req_tls_handshaking...: avg=0s      min=0s       med=0s      max=0s      p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=1.52ms  min=995.93µs med=1.46ms  max=27.89ms p(90)=1.75ms  p(95)=1.97ms
+    http_reqs..................: 180851 6017.789369/s
+    iteration_duration.........: avg=1.65ms  min=1.1ms    med=1.58ms  max=28.03ms p(90)=1.9ms   p(95)=2.13ms
+    iterations.................: 180851 6017.789369/s
+    vus........................: 10     min=10 max=10
+    vus_max....................: 10     min=10 max=10
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 50 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 50 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 140 MB 4.6 MB/s
+    data_sent..................: 46 MB  1.5 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0    ✗ 444641
+    http_req_blocked...........: avg=5.37µs  min=960ns   med=1.8µs   max=3.98ms  p(90)=2.92µs  p(95)=4.53µs
+    http_req_connecting........: avg=2.38µs  min=0s      med=0s      max=2.92ms  p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=3.26ms  min=1.19ms  med=2.97ms  max=31.06ms p(90)=4.4ms   p(95)=4.93ms
+    http_req_receiving.........: avg=42.05µs min=13.68µs med=32.55µs max=10.48ms p(90)=49.52µs p(95)=61.09µs
+    http_req_sending...........: avg=14.21µs min=6.22µs  med=10.65µs max=5.47ms  p(90)=15.19µs p(95)=28.07µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s      p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=3.2ms   min=1.14ms  med=2.92ms  max=31ms    p(90)=4.34ms  p(95)=4.86ms
+    http_reqs..................: 444641 14767.331537/s
+    iteration_duration.........: avg=3.37ms  min=1.26ms  med=3.05ms  max=66.16ms p(90)=4.5ms   p(95)=5.05ms
+    iterations.................: 444641 14767.331537/s
+    vus........................: 50     min=50 max=50
+    vus_max....................: 50     min=50 max=50
+
+
+
+
+          /\      |‾‾|  /‾‾/  /‾/
+     /\  /  \     |  |_/  /  / /
+    /  \/    \    |      |  /  ‾‾\
+   /          \   |  |‾\  \ | (_) |
+  / __________ \  |__|  \__\ \___/ .io
+
+ Init   [--------------------------------------] runner
+ Init   [--------------------------------------] options
+ Init   [--------------------------------------] execution scheduler
+Init   [--------------------------------------] Init engine
+Init   [--------------------------------------] Init metric outputs
+Init   [--------------------------------------] Init API server
+  execution: local
+     script: -
+     output: -
+
+  scenarios: (100.00%) 1 executors, 100 max VUs, 1m0s max duration (incl. graceful stop):
+           * default: 100 looping VUs for 30s (gracefulStop: 30s)
+
+Init   [--------------------------------------] Init VUs
+Init   [--------------------------------------] Start test
+
+    data_received..............: 111 MB 3.7 MB/s
+    data_sent..................: 36 MB  1.2 MB/s
+  ✓ failed requests............: 0.00%  ✓ 0     ✗ 354055
+    http_req_blocked...........: avg=6.53µs  min=940ns   med=1.78µs  max=11.67ms p(90)=2.86µs  p(95)=4.27µs
+    http_req_connecting........: avg=3.61µs  min=0s      med=0s      max=11.58ms p(90)=0s      p(95)=0s
+  ✓ http_req_duration..........: avg=8.34ms  min=1.12ms  med=7.67ms  max=65.96ms p(90)=13.65ms p(95)=18.15ms
+    http_req_receiving.........: avg=43.38µs min=14.05µs med=33.1µs  max=15.75ms p(90)=49.94µs p(95)=60.36µs
+    http_req_sending...........: avg=14.17µs min=6.26µs  med=10.61µs max=12.21ms p(90)=14.85µs p(95)=27.29µs
+    http_req_tls_handshaking...: avg=0s      min=0s      med=0s      max=0s      p(90)=0s      p(95)=0s
+    http_req_waiting...........: avg=8.28ms  min=1.07ms  med=7.61ms  max=65.91ms p(90)=13.58ms p(95)=18.08ms
+    http_reqs..................: 354055 11779.498168/s
+    iteration_duration.........: avg=8.46ms  min=1.2ms   med=7.77ms  max=66.02ms p(90)=13.82ms p(95)=18.39ms
+    iterations.................: 354055 11779.498168/s
+    vus........................: 100    min=100 max=100
+    vus_max....................: 100    min=100 max=100
+

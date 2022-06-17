@@ -6,6 +6,7 @@ let
     withNginx         = builtins.getEnv "PGRBENCH_WITH_NGINX" == "true";
     withUnixSocket    = builtins.getEnv "PGRBENCH_WITH_UNIX_SOCKET" == "true";
     withSeparatePg    = builtins.getEnv "PGRBENCH_SEPARATE_PG" == "true";
+    withNgnixLBS      = builtins.getEnv "PGRBENCH_PGRST_NGNIX_LBS" == "true";
 
     pgInstanceType    = builtins.getEnv "PGRBENCH_PG_INSTANCE_TYPE";
     pgrstInstanceType = builtins.getEnv "PGRBENCH_PGRST_INSTANCE_TYPE";
@@ -115,47 +116,51 @@ in {
       initialScript = ../schemas/chinook/chinook.sql; # Here goes the sample db
     };
 
-    systemd.services.postgrest = {
-      enable      = true;
-      description = "postgrest daemon";
-      after       = [ "postgresql.service" ];
-      wantedBy    = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart =
-          let
-            pgHost =
-              if env.withSeparatePg then "pg"
-              else if env.withUnixSocket then ""
-              else "localhost";
-            pgrstConf = pkgs.writeText "pgrst.conf" ''
-              db-uri = "postgres://postgres@${pgHost}/postgres"
-              db-schema = "public"
-              db-anon-role = "postgres"
-              db-use-legacy-gucs = false
-              db-pool = ${if builtins.stringLength env.pgrstPool == 0 then "20" else env.pgrstPool}
-              db-pool-timeout = 3600
+    systemd.services =
+    let
+      pgHost =
+        if env.withSeparatePg then "pg"
+        else if env.withUnixSocket then ""
+        else "localhost";
+      pgrstConf = num : pkgs.writeText "pgrst${num}.conf" ''
+        db-uri = "postgres://postgres@${pgHost}/postgres"
+        db-schema = "public"
+        db-anon-role = "postgres"
+        db-use-legacy-gucs = false
+        db-pool = ${if builtins.stringLength env.pgrstPool == 0 then "20" else env.pgrstPool}
+        db-pool-timeout = 3600
 
-              ${
-                if env.withNginx && env.withUnixSocket
-                then ''
-                  server-unix-socket = "/tmp/pgrst.sock"
-                  server-unix-socket-mode = "777"
-                ''
-                else if env.withNginx
-                then ''
-                  server-port = "3000"
-                ''
-                else ''
-                  server-port = "80"
-                ''
-              }
+        ${
+          if env.withNginx && env.withUnixSocket
+          then ''
+            server-unix-socket = "/tmp/pgrst${num}.sock"
+            server-unix-socket-mode = "777"
+          ''
+          else if env.withNginx
+          then ''
+            server-port = "3000"
+          ''
+          else ''
+            server-port = "80"
+          ''
+        }
 
-              jwt-secret = "reallyreallyreallyreallyverysafe"
-            '';
-          in
-          "${pgrst}/bin/postgrest ${pgrstConf}";
-        Restart = "always";
+        jwt-secret = "reallyreallyreallyreallyverysafe"
+      '';
+      pgrstService = enabled: num: {
+        enable      = enabled;
+        description = "postgrest daemon";
+        after       = [ "postgresql.service" ];
+        wantedBy    = [ "multi-user.target" ];
+        serviceConfig = {
+          ExecStart = "${pgrst}/bin/postgrest ${pgrstConf num}";
+          Restart = "always";
+        };
       };
+    in
+    {
+      postgrest1 = pgrstService true "1";
+      postgrest2 = pgrstService env.withNgnixLBS "2";
     };
 
     services.nginx = {
@@ -166,13 +171,20 @@ in {
         http {
           upstream postgrest {
             ${
-              if env.withUnixSocket
+              if env.withUnixSocket && env.withNgnixLBS
               then ''
-                server unix:/tmp/pgrst.sock;
+                server unix:/tmp/pgrst1.sock;
+                server unix:/tmp/pgrst2.sock;
+              ''
+              else if env.withUnixSocket
+              then
+              ''
+                server unix:/tmp/pgrst1.sock;
               ''
               else ''
                 server localhost:3000;
               ''
+
             }
             keepalive 64;
             keepalive_timeout 120s;
