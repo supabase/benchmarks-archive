@@ -7,7 +7,7 @@ Benchmarking setup
 
 export the following env vars from the terminal:
 ```bash
-export SUPABASE_URL=https://<project>.supabase.net
+export SUPABASE_URL=https://<project>.supabase.co
 export SUPABASE_KEY=<supabase-key>
 ```
 

@@ -2,16 +2,16 @@
 const fs = require('fs').promises
 const { createClient } = require('@supabase/supabase-js')
 
-const { supabaseKey, supabaseUrl } = process.env
+const { SUPABASE_KEY, SUPABASE_URL } = process.env
 
 const resultsDir = process.env.resultsDir || './output';
 
-if (!supabaseKey || !supabaseUrl) {
-  console.log('Export supabaseKey and supabaseUrl as environment variables. Exiting.')
+if (!SUPABASE_KEY || !SUPABASE_URL) {
+  console.log('Export SUPABASE_KEY and SUPABASE_URL as environment variables. Exiting.')
   process.exit(0)
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 ;(async () => {
   const files = await fs.readdir(resultsDir)
