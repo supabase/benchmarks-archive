@@ -13,15 +13,8 @@ nix-shell
 >
 ```
 
-Deploy with:
-
-```
-# This assumes there's a `~/.aws/credentials` file(created with aws-cli) with a "supabase-dev" profile.
-# If you want to change the profile, go to deploy.nix and edit `accessKeyId = "supabase-dev";`
-pgrbench-deploy
-
-```
-
 ## Usage
-TODO 
+
+
+TODO(Joel): Add K6 scripts
     

@@ -8,20 +8,18 @@
 
  stdenv.mkDerivation (finalAttrs: {
    pname = "gotrue";
-   version = "2.8.0";
+   version = "2.9.2";
 
    src = fetchurl {
-     url = "https://github.com/supabase/gotrue/releases/download/v${finalAttrs.version}/gotrue-v${finalAttrs.version}-arm64.tar.gz";
-     sha256 = "01rsiz20wc8zvw280p7f18hl5h3nhvkd59cklfxnlccqzp924rs4";
+     url = "https://github.com/supabase/gotrue/releases/download/v${finalAttrs.version}/gotrue-v${finalAttrs.version}-x86.tar.gz";
+     sha256 = "G+3qddI9zyuhx//TA1i1Pt+0Nig2PgEMOXvb9HqfBtY=";
    };
-   phases = ["installPhase" "patchPhase"];
+   phases = ["installPhase"];
    installPhase = ''
     mkdir -p $out/bin
     tar xzvf $src
     cp gotrue $out/bin/gotrue
     chmod +x $out/bin/gotrue
     '';
-
-   doCheck = true;
 
  })
