@@ -16,7 +16,7 @@ export let options = {
 }
 
 export default function () {
-  const res = http.get(`${supabaseUrl}/storage/v1/bucket`, {
+  const res = http.get(`${supabaseUrl}/bucket`, {
     headers: {
       Authorization: `Bearer ${supabaseKey}`,
     },
