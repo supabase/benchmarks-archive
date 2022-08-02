@@ -166,7 +166,11 @@ in {
     services.nginx = {
       enable = env.withNginx;
       config = ''
-        events {}
+        worker_processes auto;
+
+        events {
+   	  worker_connections 1024;
+	}
 
         http {
           upstream postgrest {
