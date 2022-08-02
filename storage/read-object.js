@@ -20,7 +20,7 @@ export let options = {
 export function setup() {
   const bucketName = uuidv4()
   http.post(
-    `${supabaseUrl}/storage/v1/bucket`,
+    `${supabaseUrl}/bucket`,
     JSON.stringify({ id: bucketName, name: bucketName, public: false }),
     {
       headers: {
@@ -30,7 +30,7 @@ export function setup() {
     }
   )
   const objectName = uuidv4()
-  http.post(`${supabaseUrl}/storage/v1/object/${bucketName}/${objectName}`, randomString(1e5), {
+  http.post(`${supabaseUrl}/object/${bucketName}/${objectName}`, randomString(1e5), {
     headers: {
       Authorization: `Bearer ${supabaseKey}`,
       'Content-Type': 'text/plain',
@@ -45,13 +45,13 @@ export function teardown(data) {
       Authorization: `Bearer ${supabaseKey}`,
     },
   }
-  http.post(`${supabaseUrl}/storage/v1/bucket/${data.bucketName}/empty`, null, params)
-  http.del(`${supabaseUrl}/storage/v1/bucket/${data.bucketName}`, null, params)
+  http.post(`${supabaseUrl}/bucket/${data.bucketName}/empty`, null, params)
+  http.del(`${supabaseUrl}/bucket/${data.bucketName}`, null, params)
 }
 
 export default function (data) {
   const res = http.get(
-    `${supabaseUrl}/storage/v1/object/authenticated/${data.bucketName}/${data.objectName}`,
+    `${supabaseUrl}/object/authenticated/${data.bucketName}/${data.objectName}`,
     {
       headers: {
         Authorization: `Bearer ${supabaseKey}`,
